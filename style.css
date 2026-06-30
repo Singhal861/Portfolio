@@ -375,6 +375,7 @@ section {
     position: relative;
     z-index: 1;
     max-width: 800px;
+    padding-bottom: 5rem;
 }
 
 .hero-badge {
