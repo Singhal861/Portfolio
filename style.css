@@ -1235,6 +1235,58 @@ section {
     transform: translateY(-2px);
 }
 
+.projects-subdivider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 0.5rem 0;
+}
+
+.projects-subdivider::before,
+.projects-subdivider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+.projects-subdivider span {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--amber);
+    white-space: nowrap;
+}
+
+.project-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+}
+
+.project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--amber);
+    transition: var(--transition);
+}
+
+.project-link:hover {
+    gap: 0.6rem;
+}
+
+.project-link svg {
+    width: 15px;
+    height: 15px;
+}
+
 /* ═══════════════════════════════════════════════════════════
    SKILLS
    ═══════════════════════════════════════════════════════════ */
