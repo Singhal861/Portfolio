@@ -17,10 +17,10 @@ const copy = {
   ja: {
     eyebrow: 'ぽーとふぉりお',
     title: 'にほんごのぽーたる',
-    subtitle: 'しんらいできるにほんごのけんさくとじんしょうのほうほうをおしえます。',
-    openDashboard: 'だしょをひらく',
-    createSubmission: 'しゅとくをつくる',
-    createAccount: 'あかうんとをさくる',
+    subtitle: 'にほんごで たいせつな じょうほうを あつめる ための ぽーたるです。',
+    openDashboard: 'だっしゅぼーどを ひらく',
+    createSubmission: 'しんせいを つくる',
+    createAccount: 'あかうんとを つくる',
     login: 'ろぐいん',
     languageLabel: 'げんご',
   },
@@ -70,6 +70,17 @@ export default function JapaneseHomePage() {
             <Link href="/Japanese/register" className="button primary ghost">{t.createAccount}</Link>
             <Link href="/Japanese/login" className="button secondary">{t.login}</Link>
           </div>
+        </div>
+
+        <div className="sakura-scene" aria-hidden="true">
+          <div className="sakura-sun" />
+          <div className="sakura-branch" />
+          <span className="sakura-petal petal-one" />
+          <span className="sakura-petal petal-two" />
+          <span className="sakura-petal petal-three" />
+          <span className="sakura-petal petal-four" />
+          <span className="sakura-petal petal-five" />
+          <p className="sakura-stamp">さくら</p>
         </div>
       </section>
     </div>

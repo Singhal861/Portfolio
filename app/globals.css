@@ -11,6 +11,11 @@
   --crimson-dark: #6e1223;
   --gold: #d7b66d;
   --gold-soft: #ebd7a1;
+  --amber: var(--gold);
+  --amber-dark: var(--crimson-dark);
+  --amber-light: var(--gold-soft);
+  --amber-glow: rgba(215, 182, 109, 0.12);
+  --amber-glow-md: rgba(215, 182, 109, 0.2);
   --ivory: #fffaf4;
   --text-primary: #fef7ee;
   --text-secondary: #e7d7d0;
@@ -460,5 +465,122 @@ tbody tr:hover {
 
   .page-shell {
     padding-top: 28px;
+  }
+}
+
+.japanese-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  min-height: 560px;
+  background:
+    linear-gradient(115deg, rgba(34, 27, 29, 0.98) 0%, rgba(18, 13, 16, 0.96) 62%, rgba(67, 27, 39, 0.82) 100%),
+    radial-gradient(circle at 86% 38%, rgba(247, 215, 208, 0.16), transparent 25%);
+}
+
+.japanese-hero::before {
+  position: absolute;
+  inset: 18px;
+  z-index: -1;
+  border: 1px solid rgba(247, 215, 208, 0.14);
+  border-radius: calc(var(--radius-lg) - 8px);
+  content: '';
+  pointer-events: none;
+}
+
+.japanese-hero .hero-copy {
+  position: relative;
+  z-index: 2;
+}
+
+.japanese-hero h1 {
+  max-width: 680px;
+  font-size: clamp(2.8rem, 7vw, 5.6rem);
+}
+
+.japanese-hero .japanese-quiet {
+  display: inline-block;
+  color: var(--sakura);
+  text-shadow: 0 0 28px rgba(247, 215, 208, 0.2);
+}
+
+.sakura-scene {
+  position: absolute;
+  right: clamp(-70px, 2vw, 24px);
+  bottom: -24px;
+  width: min(43vw, 500px);
+  height: 470px;
+  pointer-events: none;
+  opacity: 0.95;
+}
+
+.sakura-sun {
+  position: absolute;
+  top: 44px;
+  right: 72px;
+  width: 245px;
+  height: 245px;
+  border: 1px solid rgba(247, 215, 208, 0.25);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(247, 215, 208, 0.2), rgba(159, 29, 53, 0.06) 62%, transparent 63%);
+  box-shadow: 0 0 70px rgba(247, 215, 208, 0.12);
+}
+
+.sakura-branch {
+  position: absolute;
+  right: -24px;
+  bottom: 106px;
+  width: 480px;
+  height: 15px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, transparent 0%, #4a272d 18%, #24171c 100%);
+  transform: rotate(-24deg);
+  transform-origin: right center;
+  box-shadow: 80px -28px 0 -5px #342027, 170px -62px 0 -6px #342027;
+}
+
+.sakura-petal {
+  position: absolute;
+  width: 28px;
+  height: 38px;
+  border: 1px solid rgba(255, 250, 244, 0.65);
+  border-radius: 70% 30% 70% 30%;
+  background: linear-gradient(135deg, #fffaf4 0%, var(--sakura) 58%, var(--sakura-deep) 100%);
+  box-shadow: 0 6px 18px rgba(247, 215, 208, 0.2);
+  transform: rotate(38deg);
+}
+
+.petal-one { top: 135px; right: 94px; }
+.petal-two { top: 213px; right: 287px; transform: rotate(-22deg) scale(0.75); }
+.petal-three { top: 302px; right: 151px; transform: rotate(76deg) scale(0.62); }
+.petal-four { top: 91px; right: 320px; transform: rotate(-48deg) scale(0.56); }
+.petal-five { top: 360px; right: 332px; transform: rotate(12deg) scale(0.48); }
+
+.sakura-stamp {
+  position: absolute;
+  right: 112px;
+  bottom: 142px;
+  margin: 0;
+  color: rgba(255, 250, 244, 0.62);
+  font-size: 1.05rem;
+  letter-spacing: 0.2em;
+  writing-mode: vertical-rl;
+}
+
+@media (max-width: 800px) {
+  .japanese-hero {
+    min-height: 680px;
+  }
+
+  .sakura-scene {
+    right: -110px;
+    bottom: -150px;
+    width: 440px;
+    height: 420px;
+    opacity: 0.6;
+  }
+
+  .japanese-hero .hero-copy {
+    max-width: 100%;
   }
 }
