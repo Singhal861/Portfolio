@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 const copy = {
   en: {
-    eyebrow: 'Japanese learning hub',
+    eyebrow: 'Study space',
     title: 'Japanese Learning Hub',
     subtitle: 'A calm space for Japanese learners to practice, track progress, and keep their study journey organized.',
     openDashboard: 'Open dashboard',
@@ -15,7 +15,7 @@ const copy = {
     languageLabel: 'Language',
   },
   ja: {
-    eyebrow: 'にほんごの べんきょう',
+    eyebrow: 'べんきょうの ばしょ',
     title: 'にほんごを たのしく まなぼう',
     subtitle: 'にほんごを まなんで じょうずに なりたい ひとの ための べんきょう ばしょです。',
     openDashboard: 'だっしゅぼーどを ひらく',
@@ -77,7 +77,6 @@ export default function JapaneseHomePage() {
           <span className="sakura-petal petal-three" />
           <span className="sakura-petal petal-four" />
           <span className="sakura-petal petal-five" />
-          <p className="sakura-stamp">さくら</p>
         </div>
       </section>
     </div>
