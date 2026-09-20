@@ -5,9 +5,9 @@ import { useState } from 'react';
 
 const copy = {
   en: {
-    eyebrow: 'Portfolio route',
-    title: 'Japanese portal',
-    subtitle: 'Secure access for your Japanese experience and personal submissions.',
+    eyebrow: 'Japanese learning hub',
+    title: 'Learn Japanese with confidence',
+    subtitle: 'A calm space for Japanese learners to practice, track progress, and keep their study journey organized.',
     openDashboard: 'Open dashboard',
     createSubmission: 'Create submission',
     createAccount: 'Create account',
@@ -15,9 +15,9 @@ const copy = {
     languageLabel: 'Language',
   },
   ja: {
-    eyebrow: 'ぽーとふぉりお',
-    title: 'にほんごのぽーたる',
-    subtitle: 'にほんごで たいせつな じょうほうを あつめる ための ぽーたるです。',
+    eyebrow: 'にほんごの べんきょう',
+    title: 'にほんごを たのしく まなぼう',
+    subtitle: 'にほんごを まなんで じょうずに なりたい ひとの ための べんきょう ばしょです。',
     openDashboard: 'だっしゅぼーどを ひらく',
     createSubmission: 'しんせいを つくる',
     createAccount: 'あかうんとを つくる',
