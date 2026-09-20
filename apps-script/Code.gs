@@ -43,7 +43,13 @@ function ensureTabs_() {
     const current = sheet.getRange(1, 1, 1, headers.length).getValues()[0];
     if (name === 'Users' && current.slice(0, 4).join(',') === 'id,email,passwordHash,createdAt') {
       const oldRows = sheet.getDataRange().getValues().slice(1).filter(function (row) { return row.some(Boolean); });
-      const migratedRows = oldRows.map(function (row) { return [row[0] || '', '', row[1] || '', row[2] || '', row[3] || '']; });
+      const migratedRows = oldRows.map(function (row) {
+        // Recover rows written by the newer app before this tab was migrated.
+        if (row[2] && String(row[2]).includes('@') && String(row[3]).indexOf('$2') === 0) {
+          return [row[0] || '', row[1] || '', row[2] || '', row[3] || '', row[4] || ''];
+        }
+        return [row[0] || '', '', row[1] || '', row[2] || '', row[3] || ''];
+      });
       sheet.clearContents();
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       if (migratedRows.length) sheet.getRange(2, 1, migratedRows.length, headers.length).setValues(migratedRows);
