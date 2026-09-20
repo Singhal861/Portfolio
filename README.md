@@ -10,7 +10,7 @@ Welcome to the repository for my personal portfolio website! This project is a r
 **👉 [View Portfolio Live](https://singhal861.github.io/Portfolio/)**
 
 ## 💡 About Me
-I am a results-driven Data Engineer with 4+ years of experience architecting scalable data pipelines and leading large-scale cloud migrations across **Azure** and **GCP**. My expertise spans the full modern data stack, including **PySpark, Databricks, BigQuery, and Power BI**. 
+I am a results-driven Data Engineer with 4+ years of experience architecting scalable data pipelines and leading large-scale cloud migrations across **Azure** and **GCP**. My expertise spans the full modern data stack, including **PySpark, Databricks, BigQuery, and Power BI**.
 
 Throughout my career at **Deloitte, Infosys**, and **KPMG**, I have focused on converting complex, messy data landscapes into reliable, high-performance systems that create real business value.
 
@@ -34,3 +34,180 @@ This website was built completely from scratch focusing on modern web design aes
 
 ---
 *Designed & Built for Abhishek Singhal © 2026*
+
+---
+
+# Japanese Portal
+
+A secure, Sheets-based Next.js app built for the `/Japanese` route and styled to match the portfolio’s “Midnight & Amber” visual palette.
+
+## Features
+
+- Register and login with email + password credentials
+- Protected routing under `/Japanese`
+- Google Sheets-backed Users and Submissions tabs
+- Dashboard for each user’s own records
+- CSV export for the current user
+- Email export to the user using SMTP
+- Midnight + Amber theme matching the reference design
+
+## Local development
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Copy the example environment file:
+   ```bash
+   cp .env.example .env.local
+   ```
+
+3. Fill in the values in `.env.local`.
+
+4. Run the app:
+   ```bash
+   npm run dev
+   ```
+
+5. Open:
+   ```bash
+   http://localhost:3000/Japanese
+   ```
+
+## Base path note
+
+This app is designed to be mounted under `/Japanese` on the same portfolio domain. For Vercel, either:
+
+- keep the app as a standalone Next.js app and route it under `/Japanese` from the portfolio host, or
+- if using a Next.js `basePath`, set it to `/Japanese` and document the same route in the deployment config.
+
+For this project, the route-based structure assumes `/Japanese` is the app root.
+
+## Env vars
+
+See [.env.example](.env.example) for the complete list.
+
+Required values:
+
+- `AUTH_SECRET`
+- `GOOGLE_SHEETS_SPREADSHEET_ID`
+- `GOOGLE_SERVICE_ACCOUNT_EMAIL`
+- `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY`
+- `EMAIL_FROM`
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_USER`
+- `SMTP_PASS`
+- `NEXTAUTH_URL`
+
+## Google Sheets setup
+
+1. Create a Google Sheet and keep the spreadsheet ID from the URL.
+2. Add tabs named exactly:
+   - `Users`
+   - `Submissions`
+3. Share the spreadsheet with the service account email you create in Google Cloud.
+4. Grant the service account permission to access the spreadsheet.
+
+Header row examples:
+
+Users tab:
+
+```text
+id,email,passwordHash,createdAt
+```
+
+Submissions tab:
+
+```text
+id,userId,userEmail,name,email,phone,address,notes,createdAt
+```
+
+## Google Cloud service account setup
+
+1. Open Google Cloud Console.
+2. Create a new project or select an existing one.
+3. Go to IAM & Admin > Service Accounts.
+4. Create a service account.
+5. Generate a JSON key.
+6. Copy the `client_email` into `GOOGLE_SERVICE_ACCOUNT_EMAIL`.
+7. Copy the private key into `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY`.
+8. Enable the Google Sheets API.
+
+## Email configuration
+
+This app uses SMTP by default, which is the simplest free option for most personal projects.
+
+Example Gmail setup:
+
+- `SMTP_HOST=smtp.gmail.com`
+- `SMTP_PORT=587`
+- `SMTP_USER=your-email@gmail.com`
+- `SMTP_PASS=your-app-password`
+
+If you prefer Resend, uncomment and configure the equivalent logic in your deployment environment.
+
+## Data privacy and security
+
+- Passwords are hashed with `bcryptjs` before storage.
+- Only the logged-in user can read or export their own rows.
+- No plaintext credential values are committed to the repo.
+- All secret values must be stored in environment variables only.
+
+## Deploy to Vercel
+
+1. Push this project to GitHub.
+2. Import it into Vercel.
+3. Add the environment variables from `.env.example`.
+4. Set `NEXTAUTH_URL` to your production URL such as:
+   ```text
+   https://portfolio-abhishek-singhal.vercel.app/Japanese
+   ```
+5. Deploy.
+
+## Branch workflow: keep main updated, then build on top of it
+
+To preserve the original portfolio and keep the latest remote updates safe:
+
+1. Update the local main branch from the remote repository:
+   ```bash
+   git fetch origin
+   git checkout main
+   git pull origin main
+   ```
+2. Create or switch to the feature branch for this app work:
+   ```bash
+   git checkout japanese-portfolio-route
+   ```
+3. Rebase or merge the latest main into the feature branch before continuing:
+   ```bash
+   git rebase main
+   ```
+   or
+   ```bash
+   git merge main
+   ```
+4. Run the app build and verify the route still works on top of the updated main branch:
+   ```bash
+   npm install
+   npm run build
+   npm run dev
+   ```
+5. Push the branch after verifying:
+   ```bash
+   git push origin japanese-portfolio-route
+   ```
+
+This keeps the current portfolio updates intact, while making sure the `/Japanese` route work is built on the latest remote main state instead of an outdated base.
+
+## Later merge into the existing portfolio
+
+When attached under the same portfolio domain, keep this app under the `/Japanese` route and ensure the root portfolio site keeps working normally. The styling is self-contained and uses the provided Midnight & Amber tokens, so it can be embedded without looking like a separate product.
+
+## Notes
+
+- This uses a Sheets-only data store, which keeps the setup fully free for a small user base.
+- If email is not configured, the UI will still work, but the email export route will return a clear configuration error.
+- If anything is ambiguous, the app uses the simplest free option available.
+
