@@ -20,8 +20,6 @@ export default async function JapaneseLayout({ children }: { children: React.Rea
             {session ? (
               <>
                 <Link href="/Japanese/dashboard">Dashboard</Link>
-                <Link href="/Japanese/form">Form</Link>
-                <Link href="/Japanese/submissions">Submissions</Link>
                 <LogoutButton />
               </>
             ) : (

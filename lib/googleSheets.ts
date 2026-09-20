@@ -33,7 +33,7 @@ export async function ensureSheetTabs() {
 
   const definitions: Record<string, string[]> = {
     Users: ['id', 'email', 'passwordHash', 'createdAt'],
-    Submissions: ['id', 'userId', 'userEmail', 'name', 'email', 'phone', 'address', 'notes', 'createdAt'],
+    Verbs: ['id', 'userEmail', 'kanji', 'reading', 'meaning', 'masuForm', 'dictionaryForm', 'teForm', 'notes', 'createdAt', 'updatedAt'],
   };
 
   for (const [tabName, headers] of Object.entries(definitions)) {
@@ -90,6 +90,24 @@ export async function readRows(sheetName: string) {
   return data.map((row) => Object.fromEntries(headers.map((header, idx) => [header, row[idx] || ''])));
 }
 
+export async function readRowsWithNumbers(sheetName: string) {
+  const sheets = await getSheetsClient();
+  if (!sheets || !env.spreadsheetId) return [];
+
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId: env.spreadsheetId,
+    range: `${sheetName}!A:Z`,
+  });
+  const rows = response.data.values || [];
+  if (!rows.length) return [];
+
+  const [headers, ...data] = rows;
+  return data.map((row, index) => ({
+    rowNumber: index + 2,
+    data: Object.fromEntries(headers.map((header, idx) => [header, row[idx] || ''])),
+  }));
+}
+
 export async function appendRows(sheetName: string, rows: string[][]) {
   const sheets = await getSheetsClient();
   if (!sheets || !env.spreadsheetId) {
@@ -102,5 +120,37 @@ export async function appendRows(sheetName: string, rows: string[][]) {
     valueInputOption: 'RAW',
     insertDataOption: 'INSERT_ROWS',
     requestBody: { values: rows },
+  });
+}
+
+export async function updateRow(sheetName: string, rowNumber: number, values: string[]) {
+  const sheets = await getSheetsClient();
+  if (!sheets || !env.spreadsheetId) throw new Error('Google Sheets is not configured.');
+
+  await sheets.spreadsheets.values.update({
+    spreadsheetId: env.spreadsheetId,
+    range: `${sheetName}!A${rowNumber}:Z${rowNumber}`,
+    valueInputOption: 'RAW',
+    requestBody: { values: [values] },
+  });
+}
+
+export async function deleteRow(sheetName: string, rowNumber: number) {
+  const sheets = await getSheetsClient();
+  if (!sheets || !env.spreadsheetId) throw new Error('Google Sheets is not configured.');
+
+  const response = await sheets.spreadsheets.get({ spreadsheetId: env.spreadsheetId });
+  const sheetId = response.data.sheets?.find((sheet) => sheet.properties?.title === sheetName)?.properties?.sheetId;
+  if (sheetId === undefined) throw new Error(`Sheet tab ${sheetName} does not exist.`);
+
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId: env.spreadsheetId,
+    requestBody: {
+      requests: [{
+        deleteDimension: {
+          range: { sheetId, dimension: 'ROWS', startIndex: rowNumber - 1, endIndex: rowNumber },
+        },
+      }],
+    },
   });
 }

@@ -446,6 +446,63 @@ tbody tr:hover {
   margin: 0 auto;
 }
 
+.table-action {
+  padding: 6px 9px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--amber-light);
+  background: transparent;
+  cursor: pointer;
+}
+
+.table-action.danger,
+.danger-button {
+  color: #ffb7b8;
+  border-color: rgba(255, 120, 125, 0.4);
+}
+
+.danger-button {
+  background: rgba(159, 29, 53, 0.28);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(10, 7, 9, 0.78);
+  backdrop-filter: blur(8px);
+}
+
+.modal-card {
+  width: min(760px, 100%);
+  max-height: min(760px, calc(100vh - 40px));
+  overflow-y: auto;
+  display: grid;
+  gap: 18px;
+  padding: clamp(22px, 4vw, 38px);
+  border: 1px solid var(--border-hover);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, var(--midnight-card), var(--midnight));
+  box-shadow: var(--shadow-md);
+}
+
+.modal-card h2 {
+  margin: 0;
+}
+
+.modal-close {
+  align-self: start;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: var(--text-secondary);
+  background: transparent;
+  cursor: pointer;
+}
+
 @media (max-width: 720px) {
   .nav-wrap,
   .panel-header {

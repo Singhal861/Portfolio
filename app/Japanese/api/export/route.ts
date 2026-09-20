@@ -1,69 +1,50 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { readRows } from '@/lib/googleSheets';
+import { ensureSheetTabs, readRows } from '@/lib/googleSheets';
 import { sendCsvEmail } from '@/lib/mail';
 
+const headers = ['id', 'userEmail', 'kanji', 'reading', 'meaning', 'masuForm', 'dictionaryForm', 'teForm', 'notes', 'createdAt', 'updatedAt'];
+
 function toCsv(rows: Record<string, string>[]) {
-  if (!rows.length) {
-    return 'id,userId,userEmail,name,email,phone,address,notes,createdAt\n';
-  }
-
-  const headers = ['id', 'userId', 'userEmail', 'name', 'email', 'phone', 'address', 'notes', 'createdAt'];
   const escape = (value: string) => `"${String(value ?? '').replace(/"/g, '""')}"`;
-
-  const lines = [headers.join(',')];
-  for (const row of rows) {
-    lines.push(headers.map((header) => escape(row[header] || '')).join(','));
-  }
-
-  return lines.join('\n');
+  return [headers.join(','), ...rows.map((row) => headers.map((header) => escape(row[header] || '')).join(','))].join('\n');
 }
 
-export async function GET(request: Request) {
+async function userCsv() {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const email = session?.user?.email?.toLowerCase();
+  if (!email) return null;
 
+  await ensureSheetTabs();
+  const rows = await readRows('Verbs');
+  return { email, csv: toCsv(rows.filter((row: any) => row.userEmail === email)) };
+}
+
+export async function GET() {
   try {
-    const { searchParams } = new URL(request.url);
-    const emailOnly = searchParams.get('email') || '';
-    const sessionEmail = String((session.user as any)?.email || '');
-    const rows = await readRows('Submissions');
-    const userRows = rows.filter((row: any) => (row.userEmail || '').toLowerCase() === String(emailOnly || sessionEmail).toLowerCase());
-
-    const csv = toCsv(userRows);
-    const response = new NextResponse(csv, {
+    const result = await userCsv();
+    if (!result) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return new NextResponse(`\ufeff${result.csv}`, {
       headers: {
         'Content-Type': 'text/csv; charset=utf-8',
-        'Content-Disposition': `attachment; filename="my-submissions-${Date.now()}.csv"`,
+        'Content-Disposition': `attachment; filename="my-japanese-verbs-${Date.now()}.csv"`,
       },
     });
-
-    return response;
   } catch (error) {
-    console.error('Export error', error);
-    return NextResponse.json({ error: 'Unable to export records right now.' }, { status: 500 });
+    console.error('Verb export error', error);
+    return NextResponse.json({ error: 'Unable to export verbs right now.' }, { status: 500 });
   }
 }
 
-export async function POST(request: Request) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.email) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
+export async function POST() {
   try {
-    const sessionEmail = String((session.user as any)?.email || '');
-    const rows = await readRows('Submissions');
-    const userRows = rows.filter((row: any) => (row.userEmail || '').toLowerCase() === sessionEmail.toLowerCase());
-    const csv = toCsv(userRows);
-
-    await sendCsvEmail(sessionEmail, 'Your submitted data export', csv);
+    const result = await userCsv();
+    if (!result) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    await sendCsvEmail(result.email, 'Your Japanese verb list', result.csv);
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Email export error', error);
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'Unable to email records right now.' }, { status: 500 });
+    console.error('Verb email error', error);
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Unable to email verbs right now.' }, { status: 500 });
   }
 }
