@@ -118,7 +118,7 @@ Header row examples:
 Users tab:
 
 ```text
-id,email,passwordHash,createdAt
+id,name,email,passwordHash,createdAt
 ```
 
 Verbs tab:

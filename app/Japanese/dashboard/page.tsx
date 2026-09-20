@@ -7,5 +7,5 @@ export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) redirect('/Japanese/login');
 
-  return <div className="page-shell"><section className="panel"><VerbManager /></section></div>;
+  return <div className="page-shell"><section className="panel"><VerbManager userName={session.user.name || session.user.email || 'learner'} /></section></div>;
 }

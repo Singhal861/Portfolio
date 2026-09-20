@@ -52,7 +52,7 @@ export const authOptions: NextAuthOptions = {
         return {
           id: String(match.id || ''),
           email: String(match.email || ''),
-          name: String(match.email || ''),
+          name: String(match.name || match.email || ''),
         };
       },
     }),
@@ -62,6 +62,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.email = user.email;
+        token.name = user.name;
       }
       return token;
     },
@@ -69,6 +70,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         (session.user as any).id = String(token.id || '');
         (session.user as any).email = String(token.email || '');
+        (session.user as any).name = String(token.name || token.email || '');
       }
       return session;
     },

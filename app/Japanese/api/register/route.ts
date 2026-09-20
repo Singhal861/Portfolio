@@ -12,7 +12,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: parsed.error.issues[0]?.message || 'Invalid request.' }, { status: 400 });
     }
 
-    const { email, password } = parsed.data;
+    const { name, email, password } = parsed.data;
     await ensureSheetTabs();
     const users = await readRows('Users');
 
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     const id = `user_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const createdAt = new Date().toISOString();
 
-    await appendRows('Users', [[id, email.toLowerCase(), passwordHash, createdAt]]);
+    await appendRows('Users', [[id, name, email.toLowerCase(), passwordHash, createdAt]]);
 
     return NextResponse.json({ success: true });
   } catch (error) {

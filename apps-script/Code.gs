@@ -1,5 +1,5 @@
 const TABS = {
-  Users: ['id', 'email', 'passwordHash', 'createdAt'],
+  Users: ['id', 'name', 'email', 'passwordHash', 'createdAt'],
   Verbs: ['id', 'userEmail', 'kanji', 'reading', 'meaning', 'masuForm', 'dictionaryForm', 'teForm', 'notes', 'createdAt', 'updatedAt'],
 };
 
@@ -41,7 +41,15 @@ function ensureTabs_() {
     if (!sheet) sheet = spreadsheet.insertSheet(name);
     const headers = TABS[name];
     const current = sheet.getRange(1, 1, 1, headers.length).getValues()[0];
-    if (current.join(',') !== headers.join(',')) sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+    if (name === 'Users' && current.slice(0, 4).join(',') === 'id,email,passwordHash,createdAt') {
+      const oldRows = sheet.getDataRange().getValues().slice(1).filter(function (row) { return row.some(Boolean); });
+      const migratedRows = oldRows.map(function (row) { return [row[0] || '', '', row[1] || '', row[2] || '', row[3] || '']; });
+      sheet.clearContents();
+      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+      if (migratedRows.length) sheet.getRange(2, 1, migratedRows.length, headers.length).setValues(migratedRows);
+    } else if (current.join(',') !== headers.join(',')) {
+      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+    }
     sheet.setFrozenRows(1);
   });
 }

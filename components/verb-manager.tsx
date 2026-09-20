@@ -18,7 +18,7 @@ const emptyVerb: Omit<Verb, 'id'> = {
   kanji: '', reading: '', meaning: '', masuForm: '', dictionaryForm: '', teForm: '', notes: '',
 };
 
-export default function VerbManager() {
+export default function VerbManager({ userName }: { userName: string }) {
   const [verbs, setVerbs] = useState<Verb[]>([]);
   const [form, setForm] = useState<Omit<Verb, 'id'>>(emptyVerb);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -98,7 +98,7 @@ export default function VerbManager() {
       <div className="panel-header">
         <div>
           <p className="eyebrow"><span className="eyebrow-dot" /> My vocabulary</p>
-          <h1>Japanese verbs</h1>
+          <h1>Welcome, {userName}</h1>
           <p className="hero-text">Build your personal verb list one word at a time.</p>
         </div>
         <div className="header-actions">

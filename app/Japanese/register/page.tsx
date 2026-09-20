@@ -6,8 +6,10 @@ import Link from 'next/link';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -20,7 +22,7 @@ export default function RegisterPage() {
       const response = await fetch('/Japanese/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ name, email, password, confirmPassword }),
       });
 
       const payload = await response.json();
@@ -44,12 +46,20 @@ export default function RegisterPage() {
         <h1>Register</h1>
         <form onSubmit={handleSubmit} className="auth-form">
           <label>
+            <span>Name</span>
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" required />
+          </label>
+          <label>
             <span>Email</span>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required />
           </label>
           <label>
             <span>Password</span>
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 8 characters" minLength={8} required />
+          </label>
+          <label>
+            <span>Confirm password</span>
+            <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Repeat your password" minLength={8} required />
           </label>
           {error ? <p className="form-error">{error}</p> : null}
           <button type="submit" className="button primary wide" disabled={loading}>
