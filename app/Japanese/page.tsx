@@ -6,7 +6,7 @@ import { useState } from 'react';
 const copy = {
   en: {
     eyebrow: 'Japanese learning hub',
-    title: 'Learn Japanese with confidence',
+    title: 'Japanese Learning Hub',
     subtitle: 'A calm space for Japanese learners to practice, track progress, and keep their study journey organized.',
     openDashboard: 'Open dashboard',
     createSubmission: 'Create submission',
@@ -54,10 +54,7 @@ export default function JapaneseHomePage() {
             </div>
           </div>
 
-          <h1>
-            <span className="accent">{locale === 'en' ? 'Midnight' : 'やさしい'}</span>
-            <span className="japanese-quiet"> {locale === 'en' ? '& Sakura' : 'さくら'}</span>
-          </h1>
+          <h1 className="learning-title">{t.title}</h1>
 
           <p className="hero-text">{t.subtitle}</p>
 
