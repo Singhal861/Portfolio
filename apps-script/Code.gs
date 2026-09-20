@@ -15,6 +15,7 @@ function doPost(event) {
       case 'read': return json({ ok: true, rows: readRows_(body.sheetName) });
       case 'readWithNumbers': return json({ ok: true, rowNumbers: readRowsWithNumbers_(body.sheetName) });
       case 'append': appendRows_(body.sheetName, body.rows); return json({ ok: true });
+      case 'appendUser': return json(appendUser_(body.row));
       case 'update': updateRow_(body.sheetName, body.rowNumber, body.values); return json({ ok: true });
       case 'delete': deleteRow_(body.sheetName, body.rowNumber); return json({ ok: true });
       default: return json({ ok: false, error: 'Unknown action.' });
@@ -91,6 +92,22 @@ function readRowsWithNumbers_(name) {
 function appendRows_(name, rows) {
   const sheet = spreadsheet_().getSheetByName(name);
   if (rows.length) sheet.getRange(sheet.getLastRow() + 1, 1, rows.length, rows[0].length).setValues(rows);
+}
+
+function appendUser_(row) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const users = readRows_('Users');
+    const email = String(row[2] || '').toLowerCase();
+    if (users.some(function (user) { return String(user.email || '').toLowerCase() === email; })) {
+      return { ok: false, error: 'An account with this email already exists.' };
+    }
+    appendRows_('Users', [row]);
+    return { ok: true };
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 function updateRow_(name, rowNumber, values) {

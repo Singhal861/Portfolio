@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import { readRows, appendRows, ensureSheetTabs } from '@/lib/googleSheets';
+import { appendUser, ensureSheetTabs } from '@/lib/googleSheets';
 import { registerSchema } from '@/lib/validation';
 
 export async function POST(request: Request) {
@@ -14,18 +14,18 @@ export async function POST(request: Request) {
 
     const { name, email, password } = parsed.data;
     await ensureSheetTabs();
-    const users = await readRows('Users');
-
-    const existing = users.find((user: any) => user.email?.toLowerCase() === email.toLowerCase());
-    if (existing) {
-      return NextResponse.json({ error: 'An account with this email already exists.' }, { status: 409 });
-    }
-
     const passwordHash = await bcrypt.hash(password, 10);
     const id = `user_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const createdAt = new Date().toISOString();
 
-    await appendRows('Users', [[id, name, email.toLowerCase(), passwordHash, createdAt]]);
+    try {
+      await appendUser([id, name, email.toLowerCase(), passwordHash, createdAt]);
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('already exists')) {
+        return NextResponse.json({ error: error.message }, { status: 409 });
+      }
+      throw error;
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

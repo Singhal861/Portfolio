@@ -41,6 +41,10 @@ export async function appendRows(sheetName: string, rows: string[][]) {
   await callAppsScript('append', { sheetName, rows });
 }
 
+export async function appendUser(row: string[]) {
+  await callAppsScript('appendUser', { row });
+}
+
 export async function updateRow(sheetName: string, rowNumber: number, values: string[]) {
   await callAppsScript('update', { sheetName, rowNumber, values });
 }
