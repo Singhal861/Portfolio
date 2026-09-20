@@ -30,7 +30,7 @@ export async function sendCsvEmail(to: string, subject: string, csvContent: stri
     text: 'Your data export from the Japanese portal.',
     attachments: [
       {
-        filename: 'my-submissions.csv',
+        filename: 'my-japanese-verbs.csv',
         content: Buffer.from(csvContent, 'utf8'),
       },
     ],

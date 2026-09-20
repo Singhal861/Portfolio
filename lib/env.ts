@@ -1,8 +1,7 @@
 export const env = {
   authSecret: process.env.AUTH_SECRET || 'development-secret',
-  spreadsheetId: process.env.GOOGLE_SHEETS_SPREADSHEET_ID || '',
-  serviceAccountEmail: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || '',
-  serviceAccountPrivateKey: (process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
+  appsScriptUrl: process.env.GOOGLE_APPS_SCRIPT_URL || '',
+  appsScriptSecret: process.env.GOOGLE_APPS_SCRIPT_SECRET || '',
   emailFrom: process.env.EMAIL_FROM || 'noreply@example.com',
   smtpHost: process.env.SMTP_HOST || '',
   smtpPort: Number(process.env.SMTP_PORT || '587'),

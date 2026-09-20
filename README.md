@@ -45,8 +45,8 @@ A secure, Sheets-based Next.js app built for the `/Japanese` route and styled to
 
 - Register and login with email + password credentials
 - Protected routing under `/Japanese`
-- Google Sheets-backed Users and Submissions tabs
-- Dashboard for each user’s own records
+- Google Sheets-backed Users and Verbs tabs through Google Apps Script
+- Dashboard for each user’s own Japanese verb records
 - CSV export for the current user
 - Email export to the user using SMTP
 - Midnight + Amber theme matching the reference design
@@ -91,9 +91,8 @@ See [.env.example](.env.example) for the complete list.
 Required values:
 
 - `AUTH_SECRET`
-- `GOOGLE_SHEETS_SPREADSHEET_ID`
-- `GOOGLE_SERVICE_ACCOUNT_EMAIL`
-- `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY`
+- `GOOGLE_APPS_SCRIPT_URL`
+- `GOOGLE_APPS_SCRIPT_SECRET`
 - `EMAIL_FROM`
 - `SMTP_HOST`
 - `SMTP_PORT`
@@ -101,14 +100,18 @@ Required values:
 - `SMTP_PASS`
 - `NEXTAUTH_URL`
 
-## Google Sheets setup
+## Free Google Sheets setup
 
-1. Create a Google Sheet and keep the spreadsheet ID from the URL.
-2. Add tabs named exactly:
-   - `Users`
-   - `Submissions`
-3. Share the spreadsheet with the service account email you create in Google Cloud.
-4. Grant the service account permission to access the spreadsheet.
+1. Create a Google Sheet. Keep its spreadsheet ID from the URL.
+2. Open **Extensions > Apps Script** from that sheet.
+3. Copy [apps-script/Code.gs](apps-script/Code.gs) into the Apps Script editor.
+4. In Apps Script, open **Project Settings > Script properties** and add:
+   - `SPREADSHEET_ID`: your Google Sheet ID
+   - `APP_SECRET`: a long random secret you create
+5. Deploy it with **Deploy > New deployment > Web app**.
+6. Set **Execute as** to yourself and **Who has access** to anyone.
+7. Copy the deployed `/exec` URL into `GOOGLE_APPS_SCRIPT_URL`.
+8. Put the same `APP_SECRET` in `GOOGLE_APPS_SCRIPT_SECRET`.
 
 Header row examples:
 
@@ -118,22 +121,13 @@ Users tab:
 id,email,passwordHash,createdAt
 ```
 
-Submissions tab:
+Verbs tab:
 
 ```text
-id,userId,userEmail,name,email,phone,address,notes,createdAt
+id,userEmail,kanji,reading,meaning,masuForm,dictionaryForm,teForm,notes,createdAt,updatedAt
 ```
 
-## Google Cloud service account setup
-
-1. Open Google Cloud Console.
-2. Create a new project or select an existing one.
-3. Go to IAM & Admin > Service Accounts.
-4. Create a service account.
-5. Generate a JSON key.
-6. Copy the `client_email` into `GOOGLE_SERVICE_ACCOUNT_EMAIL`.
-7. Copy the private key into `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY`.
-8. Enable the Google Sheets API.
+This approach does not require a Google Cloud billing account, service account, private key, or trial credit. Apps Script and Google Sheets still have usage quotas, so this is intended for a small personal learning site rather than unlimited high-volume traffic.
 
 ## Email configuration
 
@@ -160,9 +154,9 @@ If you prefer Resend, uncomment and configure the equivalent logic in your deplo
 1. Push this project to GitHub.
 2. Import it into Vercel.
 3. Add the environment variables from `.env.example`.
-4. Set `NEXTAUTH_URL` to your production URL such as:
+4. Set `NEXTAUTH_URL` to the production origin, without `/Japanese`:
    ```text
-   https://portfolio-abhishek-singhal.vercel.app/Japanese
+   https://portfolio-abhishek-singhal.vercel.app
    ```
 5. Deploy.
 
