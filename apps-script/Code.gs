@@ -75,14 +75,16 @@ function ensureTabs_() {
 function seedMissingUserSamples_() {
   const users = readRows_('Users');
   const verbs = readRows_('Verbs');
-  const existingEmails = verbs.reduce(function (result, verb) {
-    result[String(verb.userEmail || '').toLowerCase()] = true;
+  const existingSamples = verbs.reduce(function (result, verb) {
+    if (String(verb.id || '').indexOf('verb_sample_') === 0) {
+      result[String(verb.userEmail || '').toLowerCase()] = true;
+    }
     return result;
   }, {});
   const now = new Date().toISOString();
   users.forEach(function (user) {
     const email = String(user.email || '').toLowerCase();
-    if (email && !existingEmails[email]) {
+    if (email && !existingSamples[email]) {
       appendRows_('Verbs', [[1, 'to wait', 'まつ', 'まちます', 'まちました', 'まちません', 'まちませんでした', 'またない', 'まった', 'またなかった', 'まって', 'まっている', 'まっています', 'まっていません', 'まち', 'verb_sample_' + user.id, email, now, now]]);
     }
   });
