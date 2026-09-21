@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       createdAt: now,
       updatedAt: now,
     };
-    await appendRows('Verbs', [[String(verb.serialNo), verb.meaning, verb.dictionary, verb.masu, verb.mashita, verb.masen, verb.masenDeshita, verb.shortNegative, verb.pastShort, verb.pastShortNegative, verb.te, verb.teIru, verb.teImasu, verb.teImasuNegative, verb.stem, verb.id, verb.userEmail, verb.createdAt, verb.updatedAt]]);
+    await appendRows('Verbs', [[String(verb.serialNo), verb.Meaning, verb.Dictionary, verb['~masu'], verb['~mashita'], verb['~masen'], verb['~masen deshita'], verb['Short -ve (nai/anai)'], verb['Past short (ta/da)'], verb['Past short -ve'], verb['~te'], verb['~te-iru'], verb['~te-imasu'], verb['~te-imasu -ve'], verb.Stem, verb.id, verb.userEmail, verb.createdAt, verb.updatedAt]]);
     return NextResponse.json({ success: true, data: verb });
   } catch (error) {
     console.error('Verb create error', error);

@@ -22,7 +22,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
     const parsed = verbSchema.safeParse(await request.json());
     if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message || 'Invalid verb.' }, { status: 400 });
     const updatedAt = new Date().toISOString();
-    await updateRow('Verbs', owner.row.rowNumber, [owner.row.data['S.No'], parsed.data.meaning, parsed.data.dictionary, parsed.data.masu, parsed.data.mashita, parsed.data.masen, parsed.data.masenDeshita, parsed.data.shortNegative, parsed.data.pastShort, parsed.data.pastShortNegative, parsed.data.te, parsed.data.teIru, parsed.data.teImasu, parsed.data.teImasuNegative, parsed.data.stem, params.id, owner.email, owner.row.data.createdAt, updatedAt]);
+    await updateRow('Verbs', owner.row.rowNumber, [owner.row.data['S.No'], parsed.data.Meaning, parsed.data.Dictionary, parsed.data['~masu'], parsed.data['~mashita'], parsed.data['~masen'], parsed.data['~masen deshita'], parsed.data['Short -ve (nai/anai)'], parsed.data['Past short (ta/da)'], parsed.data['Past short -ve'], parsed.data['~te'], parsed.data['~te-iru'], parsed.data['~te-imasu'], parsed.data['~te-imasu -ve'], parsed.data.Stem, params.id, owner.email, owner.row.data.createdAt, updatedAt]);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Verb update error', error);
