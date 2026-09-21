@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import LogoutButton from '@/components/logout-button';
 import NavLinks from '@/components/nav-links';
+import LanguageToggle from '@/components/language-toggle';
 import '@/app/globals.css';
 
 export default async function JapaneseLayout({ children }: { children: React.ReactNode }) {
@@ -17,6 +18,7 @@ export default async function JapaneseLayout({ children }: { children: React.Rea
             <span className="brand-text">Japanese Portal</span>
           </Link>
           <div className="header-actions">
+            <LanguageToggle />
             <NavLinks authenticated={Boolean(session)} />
             {session ? <LogoutButton /> : null}
           </div>
