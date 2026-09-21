@@ -1,83 +1,35 @@
-"use client";
+import { readRows } from '@/lib/googleSheets';
+import JapaneseHomeContent from '@/components/japanese-home-content';
 
-import Link from 'next/link';
-import { useState } from 'react';
+export const dynamic = 'force-dynamic';
 
-const copy = {
-  en: {
-    eyebrow: 'Study space',
-    title: 'Japanese Learning Hub',
-    subtitle: 'A calm space for Japanese learners to practice, track progress, and keep their study journey organized.',
-    openDashboard: 'Open dashboard',
-    community: 'Learner progress',
-    createAccount: 'Create account',
-    login: 'Login',
-    languageLabel: 'Language',
-  },
-  ja: {
-    eyebrow: 'べんきょうの ばしょ',
-    title: 'にほんごを たのしく まなぼう',
-    subtitle: 'にほんごを まなんで じょうずに なりたい ひとの ための べんきょう ばしょです。',
-    openDashboard: 'だっしゅぼーどを ひらく',
-    community: 'みんなの べんきょう',
-    createAccount: 'あかうんとを つくる',
-    login: 'ろぐいん',
-    languageLabel: 'げんご',
-  },
-};
+export default async function JapaneseHomePage() {
+  let users: Record<string, string>[] = [];
+  let verbs: Record<string, string>[] = [];
 
-export default function JapaneseHomePage() {
-  const [locale, setLocale] = useState<'en' | 'ja'>('en');
-  const t = copy[locale];
+  try {
+    [users, verbs] = await Promise.all([readRows('Users'), readRows('Verbs')]);
+  } catch (error) {
+    console.error('Learner progress load error', error);
+  }
 
-  return (
-    <div className="page-shell">
-      <section className="hero-card japanese-hero">
-        <div className="hero-copy">
-          <div className="hero-topline">
-            <p className="eyebrow"><span className="eyebrow-dot" /> {t.eyebrow}</p>
-            <div className="lang-switch" aria-label="Language switcher">
-              <button
-                type="button"
-                className={locale === 'en' ? 'active' : ''}
-                onClick={() => setLocale('en')}
-              >
-                English
-              </button>
-              <button
-                type="button"
-                className={locale === 'ja' ? 'active' : ''}
-                onClick={() => setLocale('ja')}
-              >
-                にほんご
-              </button>
-            </div>
-          </div>
+  const counts = verbs.reduce<Record<string, number>>((result, verb) => {
+    const email = String(verb.userEmail || '').trim().toLowerCase();
+    if (email && String(verb.Dictionary || '').trim()) {
+      result[email] = (result[email] || 0) + 1;
+    }
+    return result;
+  }, {});
 
-          <h1 className="learning-title">{t.title}</h1>
+  const learners = users
+    .filter((user) => String(user.email || '').trim())
+    .map((user) => {
+      const email = String(user.email).trim().toLowerCase();
+      return {
+        name: String(user.name || email),
+        count: counts[email] || 0,
+      };
+    });
 
-          <p className="hero-text">{t.subtitle}</p>
-
-          <div className="cta-row">
-            <Link href="/Japanese/dashboard" className="button primary">{t.community}</Link>
-          </div>
-
-          <div className="cta-row secondary-row">
-            <Link href="/Japanese/register" className="button primary ghost">{t.createAccount}</Link>
-            <Link href="/Japanese/login" className="button secondary">{t.login}</Link>
-          </div>
-        </div>
-
-        <div className="sakura-scene" aria-hidden="true">
-          <div className="sakura-sun" />
-          <div className="sakura-branch" />
-          <span className="sakura-petal petal-one" />
-          <span className="sakura-petal petal-two" />
-          <span className="sakura-petal petal-three" />
-          <span className="sakura-petal petal-four" />
-          <span className="sakura-petal petal-five" />
-        </div>
-      </section>
-    </div>
-  );
+  return <JapaneseHomeContent learners={learners} />;
 }

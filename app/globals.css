@@ -131,8 +131,13 @@ textarea {
   transition: var(--transition);
 }
 
-.nav-links a:hover {
+.nav-links a:hover,
+.nav-links a.active {
   color: var(--amber-light);
+}
+
+.nav-links a.active {
+  font-weight: 700;
 }
 
 .nav-button {
@@ -503,6 +508,28 @@ tbody tr:hover {
   cursor: pointer;
 }
 
+.modal-close-x {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.modal-close-x:hover {
+  background: var(--amber-glow);
+  border-color: var(--amber);
+  color: var(--amber-light);
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
@@ -560,6 +587,21 @@ tbody tr:hover {
 
 .action-cell { white-space: nowrap; }
 
+.badge-immutable {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(215, 182, 109, 0.12);
+  border: 1px solid rgba(215, 182, 109, 0.35);
+  color: var(--gold-soft);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
 .icon-action {
   width: 34px;
   height: 34px;
@@ -603,8 +645,32 @@ tbody tr:hover {
     padding: 18px;
   }
 
+  .modal-close-x {
+    width: 44px;
+    height: 44px;
+  }
+
+  .icon-action {
+    width: 44px;
+    height: 44px;
+  }
+
+  .table-wrap {
+    -webkit-overflow-scrolling: touch;
+  }
+
   .page-shell {
     padding-top: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
 }
 

@@ -4,6 +4,26 @@ import bcrypt from 'bcryptjs';
 import { readRows } from '@/lib/googleSheets';
 import { env } from '@/lib/env';
 
+// User cache to reduce Google Sheets API calls
+const userCache = new Map<string, { data: Record<string, string>[]; timestamp: number }>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+function getCachedUsers(): Record<string, string>[] | null {
+  const cached = userCache.get('users_all');
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached.data;
+  }
+  return null;
+}
+
+function setCachedUsers(users: Record<string, string>[]) {
+  userCache.set('users_all', { data: users, timestamp: Date.now() });
+}
+
+export function invalidateUserCache() {
+  userCache.delete('users_all');
+}
+
 declare module 'next-auth' {
   interface Session {
     user: {
@@ -37,7 +57,13 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const users = await readRows('Users');
+        // Use cache to avoid redundant Google Sheets calls
+        let users = getCachedUsers();
+        if (!users) {
+          users = await readRows('Users');
+          setCachedUsers(users);
+        }
+
         const match = users.find((user: any) => user.email?.toLowerCase() === String(credentials.email).toLowerCase());
 
         if (!match || !match.passwordHash) {

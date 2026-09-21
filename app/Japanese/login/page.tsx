@@ -17,21 +17,25 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
 
-    const result = await signIn('credentials', {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      });
 
-    if (result?.error) {
-      setError('Invalid email or password.');
+      if (result?.error) {
+        setError('Invalid email or password.');
+        setLoading(false);
+        return;
+      }
+
+      // Navigate without resetting loading - prevents flicker
+      router.push('/Japanese/dashboard');
+    } catch (err) {
+      setError('Login failed. Please try again.');
       setLoading(false);
-      return;
     }
-
-    router.push('/Japanese/dashboard');
-    router.refresh();
-    setLoading(false);
   }
 
   return (

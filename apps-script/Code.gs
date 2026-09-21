@@ -76,7 +76,7 @@ function seedMissingUserSamples_() {
   const users = readRows_('Users');
   const verbs = readRows_('Verbs');
   const existingSamples = verbs.reduce(function (result, verb) {
-    if (String(verb.id || '').indexOf('verb_sample_') === 0) {
+    if (String(verb.id || '').indexOf('verb_sample_') === 0 || (String(verb['S.No'] || '') === '1' && verb.Meaning === 'to wait')) {
       result[String(verb.userEmail || '').toLowerCase()] = true;
     }
     return result;
@@ -85,7 +85,7 @@ function seedMissingUserSamples_() {
   users.forEach(function (user) {
     const email = String(user.email || '').toLowerCase();
     if (email && !existingSamples[email]) {
-      appendRows_('Verbs', [[1, 'to wait', 'まつ', 'まちます', 'まちました', 'まちません', 'まちませんでした', 'またない', 'まった', 'またなかった', 'まって', 'まっている', 'まっています', 'まっていません', 'まち', 'verb_sample_' + user.id, email, now, now]]);
+      appendRows_('Verbs', [[1, 'to wait', 'まつ', 'まちます', 'まちました', 'まちません', 'まちませんでした', 'またない', 'まった', 'またなかった', 'まって', 'まっている', 'まっています', 'まっていません', 'まち', 'verb_sample_' + (user.id || email.replace(/[^a-zA-Z0-9]/g, '_')), email, now, now]]);
     }
   });
 }

@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import { appendUser, ensureSheetTabs } from '@/lib/googleSheets';
+import { appendUser } from '@/lib/googleSheets';
 import { registerSchema } from '@/lib/validation';
+import { invalidateUserCache } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
@@ -13,13 +14,14 @@ export async function POST(request: Request) {
     }
 
     const { name, email, password } = parsed.data;
-    await ensureSheetTabs();
     const passwordHash = await bcrypt.hash(password, 10);
     const id = `user_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const createdAt = new Date().toISOString();
 
     try {
       await appendUser([id, name, email.toLowerCase(), passwordHash, createdAt]);
+      // Invalidate user cache so new user can login immediately
+      invalidateUserCache();
     } catch (error) {
       if (error instanceof Error && error.message.includes('already exists')) {
         return NextResponse.json({ error: error.message }, { status: 409 });
