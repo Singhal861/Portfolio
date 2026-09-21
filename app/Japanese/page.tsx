@@ -9,6 +9,7 @@ const copy = {
     title: 'Japanese Learning Hub',
     subtitle: 'A calm space for Japanese learners to practice, track progress, and keep their study journey organized.',
     openDashboard: 'Open dashboard',
+    community: 'Learner progress',
     createAccount: 'Create account',
     login: 'Login',
     languageLabel: 'Language',
@@ -18,6 +19,7 @@ const copy = {
     title: 'にほんごを たのしく まなぼう',
     subtitle: 'にほんごを まなんで じょうずに なりたい ひとの ための べんきょう ばしょです。',
     openDashboard: 'だっしゅぼーどを ひらく',
+    community: 'みんなの べんきょう',
     createAccount: 'あかうんとを つくる',
     login: 'ろぐいん',
     languageLabel: 'げんご',
@@ -57,7 +59,7 @@ export default function JapaneseHomePage() {
           <p className="hero-text">{t.subtitle}</p>
 
           <div className="cta-row">
-            <Link href="/Japanese/dashboard" className="button primary">{t.openDashboard}</Link>
+            <Link href="/Japanese/dashboard" className="button primary">{t.community}</Link>
           </div>
 
           <div className="cta-row secondary-row">

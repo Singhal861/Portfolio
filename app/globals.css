@@ -503,6 +503,80 @@ tbody tr:hover {
   cursor: pointer;
 }
 
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+}
+
+.stat-card {
+  display: grid;
+  gap: 6px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(247, 215, 208, 0.06);
+}
+
+.stat-card strong {
+  color: var(--gold-soft);
+  font-size: 2.2rem;
+}
+
+.stat-name { color: var(--text-primary); font-weight: 700; overflow-wrap: anywhere; }
+.stat-label { color: var(--text-muted); font-size: 0.85rem; }
+.public-cta-panel { margin-top: 18px; }
+.public-cta-panel h2 { margin-top: 0; }
+
+.verb-form-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  gap: 14px;
+  max-height: min(52vh, 560px);
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.verb-modal {
+  width: min(1100px, 100%);
+}
+
+.form-actions,
+.action-result {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.action-result {
+  margin: 16px 0;
+  padding: 14px;
+  border: 1px solid rgba(215, 182, 109, 0.3);
+  border-radius: var(--radius-sm);
+  background: rgba(215, 182, 109, 0.08);
+  color: var(--gold-soft);
+}
+
+.action-cell { white-space: nowrap; }
+
+.icon-action {
+  width: 34px;
+  height: 34px;
+  margin-right: 6px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--amber-light);
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.icon-action:hover { background: var(--amber-glow); border-color: var(--amber); }
+.icon-action.danger { color: #ffb7b8; border-color: rgba(255, 120, 125, 0.4); }
+.form-success { margin: 0; color: #a9e6c0; }
+.is-working { opacity: 0.65; cursor: wait; }
+
 @media (max-width: 720px) {
   .nav-wrap,
   .panel-header {
@@ -518,6 +592,15 @@ tbody tr:hover {
 
   .grid-2 {
     grid-template-columns: 1fr;
+  }
+
+  .verb-form-grid {
+    grid-template-columns: repeat(2, minmax(130px, 1fr));
+    max-height: 58vh;
+  }
+
+  .modal-card {
+    padding: 18px;
   }
 
   .page-shell {
