@@ -124,8 +124,10 @@ id,name,email,passwordHash,createdAt
 Verbs tab:
 
 ```text
-id,userEmail,kanji,reading,meaning,masuForm,dictionaryForm,teForm,notes,createdAt,updatedAt
+S.No,Meaning,Dictionary,~masu,~mashita,~masen,~masen deshita,Short -ve (nai/anai),Past short (ta/da),Past short -ve,~te,~te-iru,~te-imasu,~te-imasu -ve,Stem
 ```
+
+Each new user starts with the sample row `1, to wait, まつ, まちます, まちました, まちません, まちませんでした, またない, まった, またなかった, まって, まっている, まっています, まっていません, まち`. The ownership columns are kept hidden in the sheet so exports contain only the grammar columns.
 
 This approach does not require a Google Cloud billing account, service account, private key, or trial credit. Apps Script and Google Sheets still have usage quotas, so this is intended for a small personal learning site rather than unlimited high-volume traffic.
 

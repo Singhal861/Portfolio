@@ -13,13 +13,20 @@ export const registerSchema = z.object({
 });
 
 export const verbSchema = z.object({
-  kanji: z.string().trim().min(1, 'Enter the Japanese verb.').max(100, 'Japanese verb is too long.'),
-  reading: z.string().trim().min(1, 'Enter the reading.').max(100, 'Reading is too long.'),
-  meaning: z.string().trim().min(1, 'Enter the English meaning.').max(200, 'Meaning is too long.'),
-  masuForm: z.string().trim().min(1, 'Enter the masu form.').max(100, 'Masu form is too long.'),
-  dictionaryForm: z.string().trim().min(1, 'Enter the dictionary form.').max(100, 'Dictionary form is too long.'),
-  teForm: z.string().trim().min(1, 'Enter the te form.').max(100, 'Te form is too long.'),
-  notes: z.string().trim().max(1000, 'Notes are too long.').default(''),
+  meaning: z.string().trim().min(1, 'Enter the meaning.').max(200, 'Meaning is too long.'),
+  dictionary: z.string().trim().min(1, 'Enter the dictionary form.').max(100, 'Dictionary form is too long.'),
+  masu: z.string().trim().min(1, 'Enter the masu form.').max(100, 'Masu form is too long.'),
+  mashita: z.string().trim().min(1, 'Enter the mashita form.').max(100, 'Mashita form is too long.'),
+  masen: z.string().trim().min(1, 'Enter the masen form.').max(100, 'Masen form is too long.'),
+  masenDeshita: z.string().trim().min(1, 'Enter the masen deshita form.').max(100, 'Masen deshita form is too long.'),
+  shortNegative: z.string().trim().min(1, 'Enter the short negative form.').max(100, 'Short negative form is too long.'),
+  pastShort: z.string().trim().min(1, 'Enter the past short form.').max(100, 'Past short form is too long.'),
+  pastShortNegative: z.string().trim().min(1, 'Enter the past short negative form.').max(100, 'Past short negative form is too long.'),
+  te: z.string().trim().min(1, 'Enter the te form.').max(100, 'Te form is too long.'),
+  teIru: z.string().trim().min(1, 'Enter the te-iru form.').max(100, 'Te-iru form is too long.'),
+  teImasu: z.string().trim().min(1, 'Enter the te-imasu form.').max(100, 'Te-imasu form is too long.'),
+  teImasuNegative: z.string().trim().min(1, 'Enter the te-imasu negative form.').max(100, 'Te-imasu negative form is too long.'),
+  stem: z.string().trim().min(1, 'Enter the stem.').max(100, 'Stem is too long.'),
 });
 
 export const legacySubmissionSchema = z.object({

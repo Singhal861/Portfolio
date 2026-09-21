@@ -33,14 +33,18 @@ export async function POST(request: Request) {
 
     await ensureSheetTabs();
     const now = new Date().toISOString();
+    const existingRows = await readRowsWithNumbers('Verbs');
+    const userRows = existingRows.filter((row) => row.data.userEmail === email);
+    const serialNo = userRows.length + 1;
     const verb = {
       id: `verb_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
       userEmail: email,
+      serialNo,
       ...parsed.data,
       createdAt: now,
       updatedAt: now,
     };
-    await appendRows('Verbs', [[verb.id, verb.userEmail, verb.kanji, verb.reading, verb.meaning, verb.masuForm, verb.dictionaryForm, verb.teForm, verb.notes, verb.createdAt, verb.updatedAt]]);
+    await appendRows('Verbs', [[String(verb.serialNo), verb.meaning, verb.dictionary, verb.masu, verb.mashita, verb.masen, verb.masenDeshita, verb.shortNegative, verb.pastShort, verb.pastShortNegative, verb.te, verb.teIru, verb.teImasu, verb.teImasuNegative, verb.stem, verb.id, verb.userEmail, verb.createdAt, verb.updatedAt]]);
     return NextResponse.json({ success: true, data: verb });
   } catch (error) {
     console.error('Verb create error', error);

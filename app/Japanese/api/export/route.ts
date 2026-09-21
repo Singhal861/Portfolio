@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { ensureSheetTabs, readRows } from '@/lib/googleSheets';
 import { sendCsvEmail } from '@/lib/mail';
 
-const headers = ['id', 'userEmail', 'kanji', 'reading', 'meaning', 'masuForm', 'dictionaryForm', 'teForm', 'notes', 'createdAt', 'updatedAt'];
+const headers = ['S.No', 'Meaning', 'Dictionary', '~masu', '~mashita', '~masen', '~masen deshita', 'Short -ve (nai/anai)', 'Past short (ta/da)', 'Past short -ve', '~te', '~te-iru', '~te-imasu', '~te-imasu -ve', 'Stem'];
 
 function toCsv(rows: Record<string, string>[]) {
   const escape = (value: string) => `"${String(value ?? '').replace(/"/g, '""')}"`;

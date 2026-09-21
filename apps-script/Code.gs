@@ -1,6 +1,6 @@
 const TABS = {
   Users: ['id', 'name', 'email', 'passwordHash', 'createdAt'],
-  Verbs: ['id', 'userEmail', 'kanji', 'reading', 'meaning', 'masuForm', 'dictionaryForm', 'teForm', 'notes', 'createdAt', 'updatedAt'],
+  Verbs: ['S.No', 'Meaning', 'Dictionary', '~masu', '~mashita', '~masen', '~masen deshita', 'Short -ve (nai/anai)', 'Past short (ta/da)', 'Past short -ve', '~te', '~te-iru', '~te-imasu', '~te-imasu -ve', 'Stem', 'id', 'userEmail', 'createdAt', 'updatedAt'],
 };
 
 function doPost(event) {
@@ -41,7 +41,8 @@ function ensureTabs_() {
     let sheet = spreadsheet.getSheetByName(name);
     if (!sheet) sheet = spreadsheet.insertSheet(name);
     const headers = TABS[name];
-    const current = sheet.getRange(1, 1, 1, headers.length).getValues()[0];
+    const currentWidth = Math.max(sheet.getLastColumn(), headers.length);
+    const current = sheet.getRange(1, 1, 1, currentWidth).getValues()[0];
     if (name === 'Users' && current.slice(0, 4).join(',') === 'id,email,passwordHash,createdAt') {
       const oldRows = sheet.getDataRange().getValues().slice(1).filter(function (row) { return row.some(Boolean); });
       const migratedRows = oldRows.map(function (row) {
@@ -54,10 +55,36 @@ function ensureTabs_() {
       sheet.clearContents();
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       if (migratedRows.length) sheet.getRange(2, 1, migratedRows.length, headers.length).setValues(migratedRows);
-    } else if (current.join(',') !== headers.join(',')) {
+    } else if (current.slice(0, headers.length).join(',') !== headers.join(',')) {
+      const oldHeaders = current;
+      const oldRows = sheet.getDataRange().getValues().slice(1).filter(function (row) { return row.some(Boolean); });
+      const migratedRows = oldRows.map(function (row) {
+        const old = oldHeaders.reduce(function (result, header, index) { result[header] = row[index] || ''; return result; }, {});
+        return headers.map(function (header) { return old[header] || ''; });
+      });
+      sheet.clearContents();
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+      if (migratedRows.length) sheet.getRange(2, 1, migratedRows.length, headers.length).setValues(migratedRows);
     }
     sheet.setFrozenRows(1);
+    if (name === 'Verbs') sheet.hideColumns(16, 4);
+  });
+  seedMissingUserSamples_();
+}
+
+function seedMissingUserSamples_() {
+  const users = readRows_('Users');
+  const verbs = readRows_('Verbs');
+  const existingEmails = verbs.reduce(function (result, verb) {
+    result[String(verb.userEmail || '').toLowerCase()] = true;
+    return result;
+  }, {});
+  const now = new Date().toISOString();
+  users.forEach(function (user) {
+    const email = String(user.email || '').toLowerCase();
+    if (email && !existingEmails[email]) {
+      appendRows_('Verbs', [[1, 'to wait', 'まつ', 'まちます', 'まちました', 'まちません', 'まちませんでした', 'またない', 'まった', 'またなかった', 'まって', 'まっている', 'まっています', 'まっていません', 'まち', 'verb_sample_' + user.id, email, now, now]]);
+    }
   });
 }
 
@@ -104,6 +131,8 @@ function appendUser_(row) {
       return { ok: false, error: 'An account with this email already exists.' };
     }
     appendRows_('Users', [row]);
+    const now = new Date().toISOString();
+    appendRows_('Verbs', [[1, 'to wait', 'まつ', 'まちます', 'まちました', 'まちません', 'まちませんでした', 'またない', 'まった', 'またなかった', 'まって', 'まっている', 'まっています', 'まっていません', 'まち', 'verb_sample_' + row[0], email, now, now]]);
     return { ok: true };
   } finally {
     lock.releaseLock();
