@@ -52,6 +52,7 @@ export default function VerbManager({ userName }: { userName: string }) {
   const [result, setResult] = useState('');
 
   async function loadVerbs() {
+    setError('');
     const response = await fetch('/Japanese/api/verbs');
     const payload = await response.json();
     if (!response.ok) throw new Error(payload.error || 'Unable to load verbs.');
@@ -150,7 +151,12 @@ export default function VerbManager({ userName }: { userName: string }) {
     <>
       <div className="panel-header">
         <div><p className="eyebrow"><span className="eyebrow-dot" /> My vocabulary</p><h1>Welcome, {userName}</h1><p className="hero-text">Keep every Japanese verb form in one personal sheet.</p></div>
-        <div className="header-actions"><button type="button" className="button primary" onClick={openAdd}>Add verb</button><a href="/Japanese/api/export" className="button secondary">Download CSV</a><EmailDataButton email="" /></div>
+        <div className="header-actions">
+          <button type="button" className="button secondary" onClick={() => { setLoading(true); loadVerbs().catch((e) => { setError(e instanceof Error ? e.message : 'Refresh failed.'); setLoading(false); }); }}>Refresh</button>
+          <button type="button" className="button primary" onClick={openAdd}>Add verb</button>
+          <a href="/Japanese/api/export" className="button secondary">Download CSV</a>
+          <EmailDataButton email="" />
+        </div>
       </div>
       {error ? <p className="form-error">{error}</p> : null}
       {result && !formOpen ? <div className="action-result"><span>{result}</span><button type="button" className="button primary" onClick={openAdd}>Add more verbs</button><button type="button" className="button secondary" onClick={() => setResult('')}>Back</button></div> : null}

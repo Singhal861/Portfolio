@@ -56,7 +56,7 @@ async function callAppsScript(action: string, payload: Record<string, unknown> =
   }
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 15000);
+  const timeoutId = setTimeout(() => controller.abort(), 25000);
 
   try {
     const response = await fetch(env.appsScriptUrl, {
@@ -135,3 +135,9 @@ export async function updateUserVerb(email: string, rowNumber: number, values: (
 export async function deleteUserVerb(email: string, rowNumber: number) {
   await callAppsScript('deleteUserVerb', { email, rowNumber });
 }
+
+export async function getLearnerProgress() {
+  const result = await callAppsScript('learnerProgress');
+  return result.rows || [];
+}
+

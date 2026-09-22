@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import { useState } from 'react';
+import { useLanguage } from '@/components/language-provider';
 
 const copy = {
   en: {
@@ -14,6 +14,7 @@ const copy = {
     progressTitle: 'Learner progress',
     progressDescription: 'See how many dictionary forms each learner has recorded.',
     forms: 'dictionary forms',
+    refresh: 'Refresh data',
   },
   ja: {
     eyebrow: 'べんきょうの ばしょ',
@@ -25,13 +26,33 @@ const copy = {
     progressTitle: 'みんなの べんきょう',
     progressDescription: 'それぞれの がくしゅうしゃの どうしの かずです。',
     forms: 'どうし',
+    refresh: 'データを更新',
   },
 };
 
 type Learner = { name: string; count: number };
 
-export default function JapaneseHomeContent({ learners }: { learners: Learner[] }) {
-  const t = copy.en;
+export default function JapaneseHomeContent({ learners: initialLearners }: { learners: Learner[] }) {
+  const { locale } = useLanguage();
+  const [learners, setLearners] = useState(initialLearners);
+  const [loading, setLoading] = useState(false);
+  const t = copy[locale];
+
+  async function refresh() {
+    setLoading(true);
+    try {
+      const response = await fetch('/Japanese/api/learner-progress', { cache: 'no-store' });
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setLearners(data);
+      }
+    } catch (error) {
+      console.error('Refresh failed', error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="page-shell">
       <section className="hero-card japanese-hero">
@@ -42,9 +63,14 @@ export default function JapaneseHomeContent({ learners }: { learners: Learner[] 
           <h1 className="learning-title">{t.title}</h1>
           <p className="hero-text">{t.subtitle}</p>
           <section id="learner-progress">
-            <div>
-              <p className="eyebrow"><span className="eyebrow-dot" /> {t.progressTitle}</p>
-              <p className="hero-text">{t.progressDescription}</p>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+              <div>
+                <p className="eyebrow"><span className="eyebrow-dot" /> {t.progressTitle}</p>
+                <p className="hero-text">{t.progressDescription}</p>
+              </div>
+              <button type="button" className="button secondary" onClick={refresh} disabled={loading}>
+                {loading ? '...' : t.refresh}
+              </button>
             </div>
             <div className="stats-grid">
               {learners.map((learner) => (
@@ -70,4 +96,3 @@ export default function JapaneseHomeContent({ learners }: { learners: Learner[] 
     </div>
   );
 }
-     

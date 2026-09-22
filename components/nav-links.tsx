@@ -2,12 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
-const links = [
-  { href: '/Japanese', label: 'Home' },
-  { href: '/Japanese/login', label: 'Login' },
-  { href: '/Japanese/register', label: 'Register', className: 'nav-button' },
-];
+import LogoutButton from '@/components/logout-button';
 
 export default function NavLinks({ authenticated }: { authenticated: boolean }) {
   const pathname = usePathname();
@@ -20,7 +15,7 @@ export default function NavLinks({ authenticated }: { authenticated: boolean }) 
     : [
         { href: '/Japanese', label: 'Home' },
         { href: '/Japanese/login', label: 'Login' },
-        { href: '/Japanese/register', label: 'Register' },
+        { href: '/Japanese/register', label: 'Register', className: 'nav-button' },
       ];
 
   return (
@@ -31,13 +26,14 @@ export default function NavLinks({ authenticated }: { authenticated: boolean }) 
           <Link
             key={link.href}
             href={link.href}
-            className={active ? 'active' : ''}
+            className={`${active ? 'active' : ''} ${link.className || ''}`}
             aria-current={active ? 'page' : undefined}
           >
             {link.label}
           </Link>
         );
       })}
+      {authenticated ? <LogoutButton /> : null}
     </nav>
   );
 }
