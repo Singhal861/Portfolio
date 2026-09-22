@@ -6,7 +6,7 @@ export type Locale = 'en' | 'ja';
 
 export const translations = {
   en: {
-    portalTitle: 'Japanese Portal',
+    portalTitle: 'Japanese Learning Portal',
     home: 'Home',
     login: 'Login',
     register: 'Register',
@@ -72,7 +72,7 @@ export const translations = {
     refresh: 'Refresh',
   },
   ja: {
-    portalTitle: '日本語ポータル',
+    portalTitle: '日本語学習ポータル',
     home: 'ホーム',
     login: 'ログイン',
     register: '登録',

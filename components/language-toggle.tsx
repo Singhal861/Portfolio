@@ -6,22 +6,22 @@ export default function LanguageToggle() {
   const { locale, setLocale } = useLanguage();
 
   return (
-    <div className="lang-switch" aria-label="Language switcher">
+    <div className="language-toggle">
       <button
         type="button"
-        className={locale === 'en' ? 'active' : ''}
+        className={`lang-btn ${locale === 'en' ? 'active' : ''}`}
         onClick={() => setLocale('en')}
-        aria-pressed={locale === 'en'}
+        title="Switch to English"
       >
-        English
+        EN
       </button>
       <button
         type="button"
-        className={locale === 'ja' ? 'active' : ''}
+        className={`lang-btn ${locale === 'ja' ? 'active' : ''}`}
         onClick={() => setLocale('ja')}
-        aria-pressed={locale === 'ja'}
+        title="日本語に切り替える"
       >
-        にほんご
+        JP
       </button>
     </div>
   );

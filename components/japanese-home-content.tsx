@@ -76,8 +76,10 @@ export default function JapaneseHomeContent({ learners: initialLearners }: { lea
               {learners.map((learner) => (
                 <article className="stat-card" key={learner.name}>
                   <span className="stat-name">{learner.name}</span>
-                  <strong>{learner.count}</strong>
-                  <span className="stat-label">{t.forms}</span>
+                  <div className="stat-meta">
+                    <strong>{learner.count}</strong>
+                    <span className="stat-label">{t.forms}</span>
+                  </div>
                 </article>
               ))}
             </div>
