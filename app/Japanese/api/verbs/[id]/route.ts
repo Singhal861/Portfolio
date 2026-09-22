@@ -1,7 +1,12 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { deleteRow, ensureSheetTabs, readRowsWithNumbers, SAMPLE_VERB_DATA, updateRow } from '@/lib/googleSheets';
+import {
+  readUserVerbsWithNumbers,
+  updateUserVerb,
+  deleteUserVerb,
+  SAMPLE_VERB_DATA,
+} from '@/lib/googleSheets';
 import { verbSchema } from '@/lib/validation';
 
 async function ownedVerb(id: string) {
@@ -9,11 +14,10 @@ async function ownedVerb(id: string) {
   const email = session?.user?.email?.toLowerCase();
   if (!email) return { error: 'Unauthorized' as const };
 
-  const rows = await readRowsWithNumbers('Verbs');
+  const rows = await readUserVerbsWithNumbers(email);
   const row = rows.find(
     (item) =>
-      item.data.id === id &&
-      String(item.data.userEmail || '').toLowerCase() === email
+      item.data.id === id
   );
   return row ? { email, row } : { error: 'Verb not found.' as const };
 }
@@ -53,7 +57,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
     }
 
     const updatedAt = new Date().toISOString();
-    await updateRow('Verbs', owner.row.rowNumber, [
+    await updateUserVerb(owner.email, owner.row.rowNumber, [
       owner.row.data['S.No'],
       parsed.data.Meaning,
       parsed.data.Dictionary,
@@ -110,7 +114,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
       );
     }
 
-    await deleteRow('Verbs', owner.row.rowNumber);
+    await deleteUserVerb(owner.email, owner.row.rowNumber);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Verb delete error', error);

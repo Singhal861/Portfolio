@@ -2,9 +2,10 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import {
-  appendRows,
-  ensureSheetTabs,
-  readRowsWithNumbers,
+  readUserVerbsWithNumbers,
+  appendUserVerb,
+  updateUserVerb,
+  deleteUserVerb,
   SAMPLE_VERB_DATA,
 } from '@/lib/googleSheets';
 import { verbSchema } from '@/lib/validation';
@@ -23,73 +24,14 @@ function isSampleRow(row: Record<string, string>) {
   );
 }
 
-async function ensureUserSampleRow(email: string) {
-  const rows = await readRowsWithNumbers('Verbs');
-  const userRows = rows.filter((r) => String(r.data.userEmail || '').toLowerCase() === email);
-  const hasSample = userRows.some((r) => isSampleRow(r.data));
-
-  if (!hasSample) {
-    const now = new Date().toISOString();
-    const sampleId = `verb_sample_${email.replace(/[^a-zA-Z0-9]/g, '_')}`;
-    const sampleData = {
-      'S.No': '1',
-      Meaning: SAMPLE_VERB_DATA.Meaning,
-      Dictionary: SAMPLE_VERB_DATA.Dictionary,
-      '~masu': SAMPLE_VERB_DATA['~masu'],
-      '~mashita': SAMPLE_VERB_DATA['~mashita'],
-      '~masen': SAMPLE_VERB_DATA['~masen'],
-      '~masen deshita': SAMPLE_VERB_DATA['~masen deshita'],
-      'Short -ve (nai/anai)': SAMPLE_VERB_DATA['Short -ve (nai/anai)'],
-      'Past short (ta/da)': SAMPLE_VERB_DATA['Past short (ta/da)'],
-      'Past short -ve': SAMPLE_VERB_DATA['Past short -ve'],
-      '~te': SAMPLE_VERB_DATA['~te'],
-      '~te-iru': SAMPLE_VERB_DATA['~te-iru'],
-      '~te-imasu': SAMPLE_VERB_DATA['~te-imasu'],
-      '~te-imasu -ve': SAMPLE_VERB_DATA['~te-imasu -ve'],
-      Stem: SAMPLE_VERB_DATA.Stem,
-      id: sampleId,
-      userEmail: email,
-      createdAt: now,
-      updatedAt: now,
-    };
-
-    const sampleRow = [
-      1,
-      SAMPLE_VERB_DATA.Meaning,
-      SAMPLE_VERB_DATA.Dictionary,
-      SAMPLE_VERB_DATA['~masu'],
-      SAMPLE_VERB_DATA['~mashita'],
-      SAMPLE_VERB_DATA['~masen'],
-      SAMPLE_VERB_DATA['~masen deshita'],
-      SAMPLE_VERB_DATA['Short -ve (nai/anai)'],
-      SAMPLE_VERB_DATA['Past short (ta/da)'],
-      SAMPLE_VERB_DATA['Past short -ve'],
-      SAMPLE_VERB_DATA['~te'],
-      SAMPLE_VERB_DATA['~te-iru'],
-      SAMPLE_VERB_DATA['~te-imasu'],
-      SAMPLE_VERB_DATA['~te-imasu -ve'],
-      SAMPLE_VERB_DATA.Stem,
-      sampleId,
-      email,
-      now,
-      now,
-    ];
-
-    await appendRows('Verbs', [sampleRow]);
-
-    // Add sample directly instead of re-reading
-    userRows.unshift({ rowNumber: -1, data: sampleData });
-  }
-
-  return userRows;
-}
-
 export async function GET() {
   const email = await getEmail();
   if (!email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    const userRows = await ensureUserSampleRow(email);
+    // Ensure the user's verb tab exists and has a sample row
+    // (readUserVerbsWithNumbers will ensure the tab and sample via ensureUserVerbSheet_)
+    const userRows = await readUserVerbsWithNumbers(email);
 
     // Split sample row and custom user rows
     const sampleRowItem = userRows.find((r) => isSampleRow(r.data));
@@ -132,24 +74,27 @@ export async function POST(request: Request) {
       );
     }
 
-    const fingerprint = `${email}|${parsed.data.Meaning}|${parsed.data.Dictionary}|${parsed.data['~masu']}|${parsed.data.Stem}`;
-
-    const userRows = await ensureUserSampleRow(email);
+    // Ensure the user's verb tab exists and has a sample row
+    // (appendUserVerb will ensure the tab and sample via ensureUserVerbSheet_)
+    const userRows = await readUserVerbsWithNumbers(email);
     const existing = userRows.filter((r) => !isSampleRow(r.data)).some((r) => {
       const d = r.data;
-      return String(d.userEmail || '').toLowerCase() === email &&
+      return (
+        String(d.userEmail || '').toLowerCase() === email &&
         d.Meaning === parsed.data.Meaning &&
         d.Dictionary === parsed.data.Dictionary &&
         d['~masu'] === parsed.data['~masu'] &&
-        d.Stem === parsed.data.Stem;
+        d.Stem === parsed.data.Stem
+      );
     });
     if (existing) {
       return NextResponse.json({ success: true, data: { id: 'existing', duplicate: true, message: 'Verb already saved.' } });
     }
 
+    // Append the new verb to the user's tab
     const now = new Date().toISOString();
-    const serialNo = userRows.length + 1;
     const verbId = `verb_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const serialNo = userRows.length + 1; // includes sample row if present
 
     const newRowValues = [
       serialNo,
@@ -173,7 +118,7 @@ export async function POST(request: Request) {
       now,
     ];
 
-    await appendRows('Verbs', [newRowValues]);
+    await appendUserVerb(email, newRowValues);
 
     const createdVerb = {
       id: verbId,
