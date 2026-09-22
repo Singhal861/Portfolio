@@ -69,6 +69,7 @@ export const translations = {
     unableSaveVerb: 'Unable to save verb.',
     unableDeleteVerb: 'Unable to delete verb.',
     duplicateVerb: 'Verb already saved.',
+    refresh: 'Refresh',
   },
   ja: {
     portalTitle: '日本語ポータル',
@@ -134,6 +135,7 @@ export const translations = {
     unableSaveVerb: '動詞を保存できませんでした。',
     unableDeleteVerb: '動詞を削除できませんでした。',
     duplicateVerb: 'この動詞はすでに保存されています。',
+    refresh: '更新',
   },
 };
 

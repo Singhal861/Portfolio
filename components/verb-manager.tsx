@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from 'react';
 import EmailDataButton from '@/components/email-data-button';
+import { useLanguage } from '@/components/language-provider';
 
 type Verb = {
   id: string;
@@ -38,6 +39,7 @@ const fields: { key: keyof VerbFields; label: string }[] = [
 const emptyVerb = fields.reduce((result, field) => ({ ...result, [field.key]: '' }), {} as VerbFields);
 
 export default function VerbManager({ userName }: { userName: string }) {
+  const { t } = useLanguage();
   const [verbs, setVerbs] = useState<Verb[]>([]);
   const [form, setForm] = useState<VerbFields>({ ...emptyVerb });
   const [originalForm, setOriginalForm] = useState<VerbFields | null>(null);
@@ -130,8 +132,8 @@ export default function VerbManager({ userName }: { userName: string }) {
       if (!response.ok) throw new Error(payload.error || 'Unable to save verb.');
       await loadVerbs();
       resetAndCloseForm();
-      setResult(editingId ? 'Verb updated successfully.' : 'Verb added successfully.');
-    } catch (saveError) { setError(saveError instanceof Error ? saveError.message : 'Unable to save verb.'); }
+      setResult(editingId ? t.verbUpdated : t.verbAdded);
+    } catch (saveError) { setError(saveError instanceof Error ? saveError.message : t.unableSaveVerb); }
     finally { setWorking(false); }
   }
 
@@ -141,32 +143,32 @@ export default function VerbManager({ userName }: { userName: string }) {
     try {
       const response = await fetch(`/Japanese/api/verbs/${deleteId}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ confirmation }) });
       const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error || 'Unable to delete verb.');
-      setDeleteId(null); setConfirmation(''); await loadVerbs(); setResult('Verb deleted successfully.');
-    } catch (deleteError) { setError(deleteError instanceof Error ? deleteError.message : 'Unable to delete verb.'); }
+      if (!response.ok) throw new Error(payload.error || t.unableDeleteVerb);
+      setDeleteId(null); setConfirmation(''); await loadVerbs(); setResult(t.verbDeleted);
+    } catch (deleteError) { setError(deleteError instanceof Error ? deleteError.message : t.unableDeleteVerb); }
     finally { setWorking(false); }
   }
 
   return (
     <>
       <div className="panel-header">
-        <div><p className="eyebrow"><span className="eyebrow-dot" /> My vocabulary</p><h1>Welcome, {userName}</h1><p className="hero-text">Keep every Japanese verb form in one personal sheet.</p></div>
+        <div><p className="eyebrow"><span className="eyebrow-dot" /> {t.myVocabulary}</p><h1>{t.welcome}, {userName}</h1><p className="hero-text">{t.vocabularyDescription}</p></div>
         <div className="header-actions">
-          <button type="button" className="button secondary" onClick={() => { setLoading(true); loadVerbs().catch((e) => { setError(e instanceof Error ? e.message : 'Refresh failed.'); setLoading(false); }); }}>Refresh</button>
-          <button type="button" className="button primary" onClick={openAdd}>Add verb</button>
-          <a href="/Japanese/api/export" className="button secondary">Download CSV</a>
+          <button type="button" className="button secondary" onClick={() => { setLoading(true); loadVerbs().catch((e) => { setError(e instanceof Error ? e.message : t.unableLoadVerbs); setLoading(false); }); }}>{t.refresh}</button>
+          <button type="button" className="button primary" onClick={openAdd}>{t.addVerb}</button>
+          <a href="/Japanese/api/export" className="button secondary">{t.downloadCsv}</a>
           <EmailDataButton email="" />
         </div>
       </div>
       {error ? <p className="form-error">{error}</p> : null}
-      {result && !formOpen ? <div className="action-result"><span>{result}</span><button type="button" className="button primary" onClick={openAdd}>Add more verbs</button><button type="button" className="button secondary" onClick={() => setResult('')}>Back</button></div> : null}
-      {loading ? <p className="empty-state">Loading your verbs...</p> : <div className="table-wrap"><table><thead><tr><th>S.No</th>{fields.map((field) => <th key={field.key}>{field.label}</th>)}<th>Actions</th></tr></thead><tbody>{verbs.map((verb) => <tr key={verb.id}><td>{verb['S.No']}</td>{fields.map((field) => <td key={field.key}>{verb[field.key]}</td>)}<td className="action-cell">{verb.isSample || verb.id.startsWith('verb_sample_') ? <span className="badge-immutable" title="Default sample row (immutable)">🔒 Default</span> : <><button type="button" className="icon-action" aria-label="Edit verb" title="Edit verb" onClick={() => openEdit(verb)}>✎</button><button type="button" className="icon-action danger" aria-label="Delete verb" title="Delete verb" onClick={() => { setDeleteId(verb.id); setConfirmation(''); setError(''); }}>⌫</button></>}</td></tr>)}</tbody></table></div>}
+      {result && !formOpen ? <div className="action-result"><span>{result}</span><button type="button" className="button primary" onClick={openAdd}>{t.addMoreVerbs}</button><button type="button" className="button secondary" onClick={() => setResult('')}>{t.back}</button></div> : null}
+      {loading ? <p className="empty-state">{t.loadingVerbs}</p> : <div className="table-wrap"><table><thead><tr><th>S.No</th>{fields.map((field) => <th key={field.key}>{field.label}</th>)}<th>{t.actions}</th></tr></thead><tbody>{verbs.map((verb) => <tr key={verb.id}><td>{verb['S.No']}</td>{fields.map((field) => <td key={field.key}>{verb[field.key]}</td>)}<td className="action-cell">{verb.isSample || verb.id.startsWith('verb_sample_') ? <span className="badge-immutable" title={t.defaultRowTitle}>🔒 {t.defaultRow}</span> : <><button type="button" className="icon-action" aria-label={t.editVerb} title={t.editVerb} onClick={() => openEdit(verb)}>✎</button><button type="button" className="icon-action danger" aria-label={t.deleteVerb} title={t.deleteVerb} onClick={() => { setDeleteId(verb.id); setConfirmation(''); setError(''); }}>⌫</button></>}</td></tr>)}</tbody></table></div>}
 
-      {formOpen ? <div className="modal-backdrop" role="presentation" onClick={(e) => e.target === e.currentTarget && handleCloseAttempt()}><form className="modal-card verb-modal" onSubmit={saveVerb}><button type="button" className="modal-close-x" onClick={handleCloseAttempt} aria-label="Close">×</button><div className="panel-header"><div><p className="eyebrow"><span className="eyebrow-dot" /> Verb forms</p><h2>{editingId ? 'Edit verb' : 'Add verb'}</h2></div><button type="button" className="modal-close" onClick={handleCloseAttempt}>Back</button></div><div className="verb-form-grid">{fields.map((field) => <label key={field.key}><span>{field.label}</span><input value={form[field.key] || ''} onChange={(event) => updateField(field.key, event.target.value)} required /></label>)}</div>{error ? <p className="form-error">{error}</p> : null}<div className="form-actions"><button type="submit" className={`button primary ${working ? 'is-working' : ''}`} disabled={working}>{working ? 'Saving...' : 'Submit'}</button><button type="button" className="button secondary" onClick={clearForm} disabled={working}>Clear</button>{editingId ? <button type="button" className="button danger-button" onClick={() => { setDeleteId(editingId); setConfirmation(''); }} disabled={working}>Delete</button> : null}</div></form></div> : null}
+      {formOpen ? <div className="modal-backdrop" role="presentation" onClick={(e) => e.target === e.currentTarget && handleCloseAttempt()}><form className="modal-card verb-modal" onSubmit={saveVerb}><button type="button" className="modal-close-x" onClick={handleCloseAttempt} aria-label={t.close}>×</button><div className="panel-header"><div><p className="eyebrow"><span className="eyebrow-dot" /> {t.verbForms}</p><h2>{editingId ? t.editVerb : t.addVerb}</h2></div><button type="button" className="modal-close" onClick={handleCloseAttempt}>{t.back}</button></div><div className="verb-form-grid">{fields.map((field) => <label key={field.key}><span>{field.label}</span><input value={form[field.key] || ''} onChange={(event) => updateField(field.key, event.target.value)} required /></label>)}</div>{error ? <p className="form-error">{error}</p> : null}<div className="form-actions"><button type="submit" className={`button primary ${working ? 'is-working' : ''}`} disabled={working}>{working ? t.saving : t.submit}</button><button type="button" className="button secondary" onClick={clearForm} disabled={working}>{t.clear}</button>{editingId ? <button type="button" className="button danger-button" onClick={() => { setDeleteId(editingId); setConfirmation(''); }} disabled={working}>{t.delete}</button> : null}</div></form></div> : null}
 
-      {deleteId ? <div className="modal-backdrop" role="presentation"><div className="modal-card delete-modal"><p className="eyebrow"><span className="eyebrow-dot" /> Confirm deletion</p><h2>Type DELETE to continue</h2><p className="hero-text">This prevents accidental removal of the verb.</p><input value={confirmation} onChange={(event) => setConfirmation(event.target.value)} placeholder="DELETE" autoFocus /><div className="form-actions"><button type="button" className="button secondary" onClick={() => { setDeleteId(null); setConfirmation(''); }}>Back</button><button type="button" className={`button danger-button ${working ? 'is-working' : ''}`} onClick={deleteVerb} disabled={confirmation !== 'DELETE' || working}>{working ? 'Deleting...' : 'Delete'}</button></div></div></div> : null}
+      {deleteId ? <div className="modal-backdrop" role="presentation"><div className="modal-card delete-modal"><p className="eyebrow"><span className="eyebrow-dot" /> {t.confirmDeletion}</p><h2>{t.typeDelete}</h2><p className="hero-text">{t.deleteHelp}</p><input value={confirmation} onChange={(event) => setConfirmation(event.target.value)} placeholder="DELETE" autoFocus /><div className="form-actions"><button type="button" className="button secondary" onClick={() => { setDeleteId(null); setConfirmation(''); }}>{t.back}</button><button type="button" className={`button danger-button ${working ? 'is-working' : ''}`} onClick={deleteVerb} disabled={confirmation !== 'DELETE' || working}>{working ? t.deleting : t.delete}</button></div></div></div> : null}
 
-      {showCloseWarning ? <div className="modal-backdrop" role="presentation"><div className="modal-card delete-modal"><p className="eyebrow"><span className="eyebrow-dot" /> Unsaved changes</p><h2>Close without submitting?</h2><p className="hero-text">You have entered data that will be lost.</p><div className="form-actions"><button type="button" className="button secondary" onClick={() => setShowCloseWarning(false)}>Keep editing</button><button type="button" className="button danger-button" onClick={resetAndCloseForm}>Close anyway</button></div></div></div> : null}
+      {showCloseWarning ? <div className="modal-backdrop" role="presentation"><div className="modal-card delete-modal"><p className="eyebrow"><span className="eyebrow-dot" /> {t.unsavedChanges}</p><h2>{t.closeWithoutSubmitting}</h2><p className="hero-text">{t.lostDataWarning}</p><div className="form-actions"><button type="button" className="button secondary" onClick={() => setShowCloseWarning(false)}>{t.keepEditing}</button><button type="button" className="button danger-button" onClick={resetAndCloseForm}>{t.closeAnyway}</button></div></div></div> : null}
     </>
   );
 }

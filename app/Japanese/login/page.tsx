@@ -4,9 +4,11 @@ import { FormEvent, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useLanguage } from '@/components/language-provider';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -25,7 +27,7 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        setError('Invalid email or password.');
+        setError(t.invalidLogin);
         setLoading(false);
         return;
       }
@@ -33,7 +35,7 @@ export default function LoginPage() {
       // Navigate without resetting loading - prevents flicker
       router.push('/Japanese/dashboard');
     } catch (err) {
-      setError('Login failed. Please try again.');
+      setError(t.loginFailed);
       setLoading(false);
     }
   }
@@ -41,24 +43,24 @@ export default function LoginPage() {
   return (
     <div className="auth-shell">
       <div className="auth-card">
-        <p className="eyebrow"><span className="eyebrow-dot" /> Welcome back</p>
-        <h1>Login</h1>
+        <p className="eyebrow"><span className="eyebrow-dot" /> {t.welcomeBack}</p>
+        <h1>{t.login}</h1>
         <form onSubmit={handleSubmit} className="auth-form">
           <label>
-            <span>Email</span>
+            <span>{t.email}</span>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required />
           </label>
           <label>
-            <span>Password</span>
+            <span>{t.password}</span>
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Your password" required />
           </label>
           {error ? <p className="form-error">{error}</p> : null}
           <button type="submit" className="button primary wide" disabled={loading}>
-            {loading ? 'Signing in...' : 'Login'}
+            {loading ? t.signingIn : t.login}
           </button>
         </form>
         <p className="auth-switch">
-          Need an account? <Link href="/Japanese/register">Register</Link>
+          {t.needAccount} <Link href="/Japanese/register">{t.createAccount}</Link>
         </p>
       </div>
     </div>

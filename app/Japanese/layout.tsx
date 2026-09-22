@@ -5,6 +5,8 @@ import NavLinks from '@/components/nav-links';
 import LanguageToggle from '@/components/language-toggle';
 import '@/app/globals.css';
 
+export const dynamic = 'force-dynamic';
+
 export default async function JapaneseLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
 
