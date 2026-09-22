@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
   try {
     const rows = await getLearnerProgress();
-    const learners = rows.map((row) => ({
+    const learners = rows.map((row: any) => ({
       name: row.name || '',
       count: Number(row.count || 0),
     }));

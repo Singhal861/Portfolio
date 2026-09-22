@@ -9,4 +9,7 @@ export const env = {
   smtpPass: process.env.SMTP_PASS || '',
   nextAuthUrl: process.env.NEXTAUTH_URL || 'http://localhost:3000/Japanese',
   resendApiKey: process.env.RESEND_API_KEY || '',
+  supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '',
+  supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.anon_public_key || process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_API || '',
 };
+

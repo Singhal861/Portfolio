@@ -5,8 +5,10 @@ import {
   readUserVerbsWithNumbers,
   updateUserVerb,
   deleteUserVerb,
+  deleteUserVerbById,
   SAMPLE_VERB_DATA,
 } from '@/lib/googleSheets';
+import { supabase } from '@/lib/supabase';
 import { verbSchema } from '@/lib/validation';
 
 async function ownedVerb(id: string) {
@@ -16,7 +18,7 @@ async function ownedVerb(id: string) {
 
   const rows = await readUserVerbsWithNumbers(email);
   const row = rows.find(
-    (item) =>
+    (item: any) =>
       item.data.id === id
   );
   return row ? { email, row } : { error: 'Verb not found.' as const };
@@ -114,7 +116,11 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
       );
     }
 
-    await deleteUserVerb(owner.email, owner.row.rowNumber);
+    if (supabase) {
+      await deleteUserVerbById(params.id);
+    } else {
+      await deleteUserVerb(owner.email, owner.row.rowNumber);
+    }
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Verb delete error', error);

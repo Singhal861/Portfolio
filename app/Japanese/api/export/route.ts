@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { authOptions } from '../../../../lib/auth';
 import {
   readUserVerbs,
   SHEET_HEADERS,
-} from '@/lib/googleSheets';
-import { sendCsvEmail } from '@/lib/mail';
+} from '../../../../lib/googleSheets';
+import { sendCsvEmail } from '../../../../lib/mail';
 
 function escapeCsv(value: unknown) {
   const str = String(value ?? '');

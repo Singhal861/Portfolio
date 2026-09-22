@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import { appendUser } from '@/lib/googleSheets';
-import { registerSchema } from '@/lib/validation';
-import { invalidateUserCache } from '@/lib/auth';
+import { appendUser } from '../../../../lib/googleSheets';
+import { registerSchema } from '../../../../lib/validation';
+import { invalidateUserCache } from '../../../../lib/auth';
 
 export async function POST(request: Request) {
   try {

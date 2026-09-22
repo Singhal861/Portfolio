@@ -3,8 +3,9 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { readRows } from '@/lib/googleSheets';
 import { env } from '@/lib/env';
+import { supabase } from '@/lib/supabase';
 
-// User cache to reduce Google Sheets API calls
+// User cache to reduce database calls
 const userCache = new Map<string, { data: Record<string, string>[]; timestamp: number }>();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
@@ -57,11 +58,30 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        // Use cache to avoid redundant Google Sheets calls
         let users = getCachedUsers();
         if (!users) {
-          users = await readRows('Users');
-          setCachedUsers(users);
+          if (supabase) {
+            const { data, error } = await supabase.from('users').select('*');
+            if (!error && data) {
+              users = data.map((u: any) => ({
+                id: u.id,
+                name: u.name,
+                email: u.email,
+                passwordHash: u.password_hash,
+                createdAt: u.created_at,
+              }));
+            }
+          }
+          if (!users) {
+            users = await readRows('Users');
+          }
+          if (users) {
+            setCachedUsers(users);
+          }
+        }
+
+        if (!users) {
+          return null;
         }
 
         const match = users.find((user: any) => user.email?.toLowerCase() === String(credentials.email).toLowerCase());
@@ -103,3 +123,4 @@ export const authOptions: NextAuthOptions = {
   },
   secret: env.authSecret,
 };
+

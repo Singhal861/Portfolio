@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { authOptions } from '../../../../lib/auth';
 import {
   readUserVerbsWithNumbers,
   appendUserVerb,
   updateUserVerb,
   deleteUserVerb,
   SAMPLE_VERB_DATA,
-} from '@/lib/googleSheets';
-import { verbSchema } from '@/lib/validation';
+} from '../../../../lib/googleSheets';
+import { verbSchema } from '../../../../lib/validation';
 
 async function getEmail() {
   const session = await getServerSession(authOptions);
@@ -34,8 +34,8 @@ export async function GET() {
     const userRows = await readUserVerbsWithNumbers(email);
 
     // Split sample row and custom user rows
-    const sampleRowItem = userRows.find((r) => isSampleRow(r.data));
-    const customRowItems = userRows.filter((r) => !isSampleRow(r.data));
+    const sampleRowItem = userRows.find((r: any) => isSampleRow(r.data));
+    const customRowItems = userRows.filter((r: any) => !isSampleRow(r.data));
 
     const result = [];
     if (sampleRowItem) {
@@ -46,7 +46,7 @@ export async function GET() {
       });
     }
 
-    customRowItems.forEach((r, index) => {
+    customRowItems.forEach((r: any, index: number) => {
       result.push({
         ...r.data,
         'S.No': String(index + 2),
@@ -77,7 +77,7 @@ export async function POST(request: Request) {
     // Ensure the user's verb tab exists and has a sample row
     // (appendUserVerb will ensure the tab and sample via ensureUserVerbSheet_)
     const userRows = await readUserVerbsWithNumbers(email);
-    const existing = userRows.filter((r) => !isSampleRow(r.data)).some((r) => {
+    const existing = userRows.filter((r: any) => !isSampleRow(r.data)).some((r: any) => {
       const d = r.data;
       return (
         String(d.userEmail || '').toLowerCase() === email &&

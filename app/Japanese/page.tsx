@@ -8,7 +8,7 @@ export default async function JapaneseHomePage() {
 
   try {
     const rows = await getLearnerProgress();
-    learners = rows.map(row => ({
+    learners = rows.map((row: any) => ({
       name: row.name || '',
       count: Number(row.count || 0)
     }));
