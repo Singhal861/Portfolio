@@ -114,10 +114,24 @@ export async function appendUser(row: string[]) {
   await callAppsScript('appendUser', { row });
 }
 
-export async function updateRow(sheetName: string, rowNumber: number, values: (string | number)[]) {
-  await callAppsScript('update', { sheetName, rowNumber, values });
+export async function readUserVerbs(email: string) {
+  const result = await callAppsScript('readUserVerbs', { email });
+  return result.rows || [];
 }
 
-export async function deleteRow(sheetName: string, rowNumber: number) {
-  await callAppsScript('delete', { sheetName, rowNumber });
+export async function readUserVerbsWithNumbers(email: string) {
+  const result = await callAppsScript('readUserVerbsWithNumbers', { email });
+  return result.rowNumbers || [];
+}
+
+export async function appendUserVerb(email: string, row: (string | number)[]) {
+  await callAppsScript('appendUserVerb', { email, row });
+}
+
+export async function updateUserVerb(email: string, rowNumber: number, values: (string | number)[]) {
+  await callAppsScript('updateUserVerb', { email, rowNumber, values });
+}
+
+export async function deleteUserVerb(email: string, rowNumber: number) {
+  await callAppsScript('deleteUserVerb', { email, rowNumber });
 }
