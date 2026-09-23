@@ -1,0 +1,77 @@
+"use client";
+
+import { FormEvent, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useLanguage } from '@/components/language-provider';
+
+export default function RegisterPage() {
+  const router = useRouter();
+  const { t } = useLanguage();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await fetch('/Japanese/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, confirmPassword }),
+      });
+
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error || 'Registration failed.');
+      }
+
+      router.push('/Japanese/login');
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Registration failed.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="auth-shell">
+      <div className="auth-card">
+        <p className="eyebrow"><span className="eyebrow-dot" /> {t.createAccount}</p>
+        <h1>{t.register}</h1>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <label>
+            <span>{t.name}</span>
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" required />
+          </label>
+          <label>
+            <span>{t.email}</span>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required />
+          </label>
+          <label>
+            <span>{t.password}</span>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 8 characters" minLength={8} required />
+          </label>
+          <label>
+            <span>{t.confirmPassword}</span>
+            <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Repeat your password" minLength={8} required />
+          </label>
+          {error ? <p className="form-error">{error}</p> : null}
+          <button type="submit" className="button primary wide" disabled={loading}>
+            {loading ? t.creating : t.createAccount}
+          </button>
+        </form>
+        <p className="auth-switch">
+          {t.alreadyHaveAccount} <Link href="/Japanese/login">{t.login}</Link>
+        </p>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,10 @@
+node_modules
+.next
+out
+.env
+.env.local
+npm-debug.log*
+.env.example
+.DS_Store
+*Abhishek_Singhal_Portfolio_Prompt.txt*
+dev.log
