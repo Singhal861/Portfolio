@@ -563,6 +563,36 @@ tbody tr:hover {
   margin: 0;
 }
 
+/* Add Verb form styles - restored from history */
+.verb-form-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  gap: 14px;
+  max-height: min(52vh, 560px);
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.verb-modal {
+  width: min(1100px, 100%);
+}
+
+.form-actions,
+.action-result {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.action-result {
+  margin: 16px 0;
+  padding: 14px;
+  border-radius: var(--radius);
+  background: var(--midnight-card);
+  border: 1px solid var(--border);
+}
+
 /* Enhanced mobile responsiveness */
 @media (max-width: 640px) {
   /* Header actions - stack vertically */
@@ -593,36 +623,16 @@ tbody tr:hover {
     gap: 16px;
   }
 
-  /* Verb form grid - single column */
+  /* Verb form grid - 2 columns on mobile */
   .verb-form-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(130px, 1fr));
+    max-height: 58vh;
     gap: 12px;
   }
 
-  /* Form actions - stack */
-  .form-actions {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .form-actions button {
-    width: 100%;
-  }
-
-  /* Action results - stack */
-  .action-result {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .action-result button {
-    width: 100%;
-  }
-
-  /* Modal card - full width */
   .modal-card {
     width: calc(100% - 24px);
-    padding: 16px;
+    padding: 18px;
   }
 
   /* Table wrap - allow horizontal scroll */
