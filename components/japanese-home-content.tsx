@@ -11,7 +11,6 @@ const copy = {
     createAccount: 'Create account',
     login: 'Login',
     progressTitle: 'Learner progress',
-    progressDescription: 'See how many dictionary forms each learner has recorded.',
     forms: 'dictionary forms',
     refresh: 'Refresh data',
   },
@@ -23,7 +22,6 @@ const copy = {
     createAccount: 'あかうんとを つくる',
     login: 'ろぐいん',
     progressTitle: 'みんなの べんきょう',
-    progressDescription: 'それぞれの がくしゅうしゃの どうしの かずです。',
     forms: 'どうし',
     refresh: 'データを更新',
   },
@@ -47,9 +45,8 @@ export default function JapaneseHomeContent({ learners: initialLearners }: { lea
           <section id="learner-progress">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
               <div>
-                <p className="eyebrow"><span className="eyebrow-dot" /> {t.progressTitle}</p>
-                <p className="hero-text">{t.progressDescription}</p>
-              </div>
+                <p className="eyebrow learner-progress-title"> <span className="eyebrow-dot" /> {t.progressTitle}</p>
+                </div>
             </div>
             <div className="stats-grid">
               {initialLearners.map((learner) => (

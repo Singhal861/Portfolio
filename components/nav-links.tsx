@@ -37,9 +37,7 @@ export default function NavLinks({ authenticated, isMenu = false }: { authentica
           </Link>
         );
       })}
-      {authenticated ? (
-        <LogoutButton className={isMenu ? "menu-item" : "nav-button logout-button"} />
-      ) : null}
+      {authenticated ? (<LogoutButton className={isMenu ? "menu-item" : "logout-link"} />) : null}
     </nav>
   );
 }
