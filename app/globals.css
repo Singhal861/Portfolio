@@ -190,6 +190,10 @@ textarea {
   font-weight: 600;
 }
 
+.logout-button {
+  border-radius: 8px;
+}
+
 .lang-btn {
   display: flex;
   align-items: center;
@@ -661,6 +665,7 @@ tbody tr:hover {
 
 /* Enhanced mobile responsiveness */
 @media (max-width: 640px) {
+
   /* Panel header - stack on mobile */
   .panel-header {
     flex-direction: column;
@@ -733,9 +738,23 @@ tbody tr:hover {
   }
 
   .header-actions .button,
-  .header-actions a,
-  .header-actions button {
+  .header-actions a {
     padding: 0.8rem 1.2rem;
+  }
+
+  /* Keep header controls at their intended 44x44 size */
+  .header-actions .lang-btn,
+  .header-actions .theme-toggle-btn,
+  .header-actions .hamburger-btn {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    max-width: 44px;
+    max-height: 44px;
+    flex: 0 0 44px;
+    flex-shrink: 0;
+    padding: 0;
   }
 
   .verb-form-grid {
@@ -772,6 +791,7 @@ textarea:focus-visible,
 
 /* Improve touch targets for mobile */
 @media (pointer: coarse) {
+
   .button,
   .lang-btn,
   .theme-toggle-btn,
@@ -802,9 +822,11 @@ body {
   .desktop-only {
     display: inline-flex !important;
   }
+
   div.desktop-only {
     display: block !important;
   }
+
   .header-actions.desktop-only {
     display: flex !important;
   }
@@ -813,6 +835,7 @@ body {
 .mobile-only {
   display: inline-flex !important;
 }
+
 @media (min-width: 1200px) {
   .mobile-only {
     display: none !important;
@@ -822,6 +845,7 @@ body {
 .hide-on-mobile {
   display: inherit;
 }
+
 @media (max-width: 767px) {
   .hide-on-mobile {
     display: none !important;
