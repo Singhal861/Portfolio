@@ -563,6 +563,25 @@ tbody tr:hover {
   margin: 0;
 }
 
+.modal-close {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--midnight-card);
+  color: var(--text-primary);
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.modal-close:hover {
+  background: var(--amber-glow);
+  border-color: var(--crimson);
+}
+
 /* Add Verb form styles - restored from history */
 .verb-form-grid {
   display: grid;
