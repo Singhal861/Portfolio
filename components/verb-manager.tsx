@@ -154,10 +154,9 @@ export default function VerbManager({ userName }: { userName: string }) {
       <div className="panel-header">
         <div><p className="eyebrow"><span className="eyebrow-dot" /> {t.myVocabulary}</p><h1>{t.welcome}, {userName}</h1><p className="hero-text">{t.vocabularyDescription}</p></div>
         <div className="header-actions">
-          <button type="button" className="button secondary" onClick={() => { setLoading(true); loadVerbs().catch((e) => { setError(e instanceof Error ? e.message : t.unableLoadVerbs); setLoading(false); }); }}>{t.refresh}</button>
           <button type="button" className="button primary" onClick={openAdd}>{t.addVerb}</button>
-          <a href="/Japanese/api/export" className="button secondary">{t.downloadCsv}</a>
-          <EmailDataButton email="" />
+          <a href="/Japanese/api/export" className="button secondary hide-on-mobile">{t.downloadCsv}</a>
+          <div className="hide-on-mobile"><EmailDataButton email="" /></div>
         </div>
       </div>
       {error ? <p className="form-error">{error}</p> : null}

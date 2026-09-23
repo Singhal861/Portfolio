@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useLanguage } from '@/components/language-provider';
 
 const copy = {
@@ -34,24 +33,7 @@ type Learner = { name: string; count: number };
 
 export default function JapaneseHomeContent({ learners: initialLearners }: { learners: Learner[] }) {
   const { locale } = useLanguage();
-  const [learners, setLearners] = useState(initialLearners);
-  const [loading, setLoading] = useState(false);
   const t = copy[locale];
-
-  async function refresh() {
-    setLoading(true);
-    try {
-      const response = await fetch('/Japanese/api/learner-progress', { cache: 'no-store' });
-      const data = await response.json();
-      if (Array.isArray(data)) {
-        setLearners(data);
-      }
-    } catch (error) {
-      console.error('Refresh failed', error);
-    } finally {
-      setLoading(false);
-    }
-  }
 
   return (
     <div className="page-shell">
@@ -68,12 +50,9 @@ export default function JapaneseHomeContent({ learners: initialLearners }: { lea
                 <p className="eyebrow"><span className="eyebrow-dot" /> {t.progressTitle}</p>
                 <p className="hero-text">{t.progressDescription}</p>
               </div>
-              <button type="button" className="button secondary" onClick={refresh} disabled={loading}>
-                {loading ? '...' : t.refresh}
-              </button>
             </div>
             <div className="stats-grid">
-              {learners.map((learner) => (
+              {initialLearners.map((learner) => (
                 <article className="stat-card" key={learner.name}>
                   <span className="stat-name">{learner.name}</span>
                   <div className="stat-meta">
