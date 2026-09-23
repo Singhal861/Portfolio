@@ -78,7 +78,7 @@ export default function JapaneseHomeContent({ learners: initialLearners }: { lea
                   <span className="stat-name">{learner.name}</span>
                   <div className="stat-meta">
                     <strong>{learner.count}</strong>
-                    <span className="stat-label">{t.forms}</span>
+                    <span className="stat-label">{locale === 'ja' ? '動詞' : (learner.count === 1 ? ' Verb' : ' Verbs')}</span>
                   </div>
                 </article>
               ))}

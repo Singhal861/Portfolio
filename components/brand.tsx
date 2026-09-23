@@ -8,7 +8,7 @@ export default function Brand() {
 
   return (
     <Link href="/Japanese" className="brand" aria-label="Home">
-      <span className="brand-mark">🌸</span>
+      <span className="brand-mark">AS</span>
       <span className="brand-text">{t.portalTitle}</span>
     </Link>
   );

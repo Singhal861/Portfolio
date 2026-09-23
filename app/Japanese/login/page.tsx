@@ -34,6 +34,7 @@ export default function LoginPage() {
 
       // Navigate without resetting loading - prevents flicker
       router.push('/Japanese/dashboard');
+      router.refresh();
     } catch (err) {
       setError(t.loginFailed);
       setLoading(false);

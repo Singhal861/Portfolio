@@ -138,7 +138,7 @@ textarea {
 .brand-mark {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-center: center;
   width: 38px;
   height: 38px;
   border-radius: 50%;
@@ -388,6 +388,7 @@ label span {
   color: var(--text-secondary);
 }
 
+/* Restored add verb form styling - exactly matching git history */
 input,
 textarea {
   width: 100%;
@@ -560,4 +561,196 @@ tbody tr:hover {
 
 .modal-card h2 {
   margin: 0;
+}
+
+/* Enhanced mobile responsiveness */
+@media (max-width: 640px) {
+  /* Header actions - stack vertically */
+  .header-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .header-actions > * {
+    flex: 1 1 auto;
+  }
+
+  .header-actions .button,
+  .header-actions a,
+  .header-actions button {
+    width: 100%;
+    text-align: center;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  /* Panel header - stack on mobile */
+  .panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  /* Verb form grid - single column */
+  .verb-form-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* Form actions - stack */
+  .form-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+
+  /* Action results - stack */
+  .action-result {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .action-result button {
+    width: 100%;
+  }
+
+  /* Modal card - full width */
+  .modal-card {
+    width: calc(100% - 24px);
+    padding: 16px;
+  }
+
+  /* Table wrap - allow horizontal scroll */
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  /* Adjust font sizes for better mobile readability */
+  h1 {
+    font-size: clamp(2rem, 9vw, 3.5rem);
+  }
+
+  .hero-text {
+    font-size: 1rem;
+  }
+
+  .eyebrow {
+    font-size: 0.7rem;
+  }
+
+  label span {
+    font-size: 0.85rem;
+  }
+
+  input,
+  textarea {
+    padding: 0.8rem 0.9rem;
+    font-size: 0.9rem;
+  }
+
+  .button {
+    padding: 0.7rem 1.1rem;
+    font-size: 0.875rem;
+  }
+
+  .lang-btn {
+    padding: 5px 8px;
+    font-size: 0.7rem;
+  }
+
+  .theme-toggle-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .brand-mark {
+    width: 32px;
+    height: 32px;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .verb-form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tablet and small desktop adjustments */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .header-actions {
+    gap: 10px;
+  }
+
+  .header-actions .button,
+  .header-actions a,
+  .header-actions button {
+    padding: 0.8rem 1.2rem;
+  }
+
+  .verb-form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .form-actions {
+    gap: 10px;
+  }
+}
+
+/* Improve form field consistency */
+label {
+  margin-bottom: 4px;
+}
+
+input,
+textarea {
+  margin-bottom: 8px;
+}
+
+/* Fix for inconsistent box styling */
+/* Ensure all interactive elements have consistent focus states */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+.lang-btn:focus-visible,
+.theme-toggle-btn:focus-visible,
+.table-action:focus-visible,
+.icon-action:focus-visible {
+  outline: 2px solid var(--crimson);
+  outline-offset: 2px;
+}
+
+/* Improve touch targets for mobile */
+@media (pointer: coarse) {
+  .button,
+  .lang-btn,
+  .theme-toggle-btn,
+  .table-action,
+  .icon-action,
+  .nav-button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .header-actions .button,
+  .header-actions a,
+  .header-actions button {
+    min-height: 48px;
+  }
 }
