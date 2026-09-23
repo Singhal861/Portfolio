@@ -12,14 +12,14 @@ export default function NavLinks({ authenticated, isMenu = false }: { authentica
 
   const activeLinks = authenticated
     ? [
-        { href: '/Japanese', label: t.home },
-        { href: '/Japanese/dashboard', label: t.dashboard },
-      ]
+      { href: '/Japanese', label: t.home },
+      { href: '/Japanese/dashboard', label: t.dashboard },
+    ]
     : [
-        { href: '/Japanese', label: t.home },
-        { href: '/Japanese/login', label: t.login },
-        { href: '/Japanese/register', label: t.register, className: isMenu ? 'menu-item' : 'nav-button' },
-      ];
+      { href: '/Japanese', label: t.home },
+      { href: '/Japanese/login', label: t.login },
+      { href: '/Japanese/register', label: t.register, className: isMenu ? 'menu-item' : 'nav-button' },
+    ];
 
   return (
     <nav className="nav-links" aria-label="Primary navigation">
@@ -37,7 +37,9 @@ export default function NavLinks({ authenticated, isMenu = false }: { authentica
           </Link>
         );
       })}
-      {authenticated ? <LogoutButton className={isMenu ? "menu-item" : "nav-button"} /> : null}
+      {authenticated ? (
+        <LogoutButton className={isMenu ? "menu-item" : "nav-button logout-button"} />
+      ) : null}
     </nav>
   );
 }
