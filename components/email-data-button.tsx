@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-export default function EmailDataButton({ email }: { email: string }) {
+export default function EmailDataButton({ email, className = "button secondary" }: { email: string, className?: string }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -32,7 +32,7 @@ export default function EmailDataButton({ email }: { email: string }) {
 
   return (
     <>
-      <button type="button" className="button secondary" onClick={handleEmail} disabled={loading}>
+      <button type="button" className={className} onClick={handleEmail} disabled={loading}>
         {loading ? 'Sending...' : 'Email me my data'}
       </button>
       {message ? <p className="form-error" style={{ marginTop: 8 }}>{message}</p> : null}

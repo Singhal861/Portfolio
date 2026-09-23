@@ -53,13 +53,13 @@ export default function SiteHeader({ authenticated }: { authenticated: boolean }
               <>
                 <div className="mobile-menu-overlay" onClick={() => setIsMenuOpen(false)} aria-hidden="true" />
                 <div className="mobile-menu-dropdown">
-                  <NavLinks authenticated={authenticated} />
+                  <NavLinks authenticated={authenticated} isMenu={true} />
                   
                   {authenticated && (
                     <div className="mobile-menu-extra-actions">
-                      <a href="/Japanese/api/export" className="button secondary wide" onClick={() => setIsMenuOpen(false)}>{t.downloadCsv}</a>
+                      <a href="/Japanese/api/export" className="menu-item" onClick={() => setIsMenuOpen(false)}>{t.downloadCsv}</a>
                       <div className="wide">
-                        <EmailDataButton email="" />
+                        <EmailDataButton email="" className="menu-item" />
                       </div>
                     </div>
                   )}
