@@ -7,11 +7,46 @@ export function createTransport() {
   }
 
   return nodemailer.createTransport({
-    service: 'gmail',
+    host: env.smtpHost,
+    port: env.smtpPort,
+    secure: env.smtpPort === 465,
     auth: {
       user: env.smtpUser,
       pass: env.smtpPass,
     },
+  });
+}
+
+export function createBrevoTransport() {
+  if (!env.smtpHostBr || !env.smtpUserBr || !env.smtpPassBr || !env.brevoFromEmail || !env.brevoFromName) {
+    return null;
+  }
+
+  return nodemailer.createTransport({
+    host: env.smtpHostBr,
+    port: env.smtpPortBr,
+    secure: env.smtpPortBr === 465,
+    auth: {
+      user: env.smtpUserBr,
+      pass: env.smtpPassBr,
+    },
+  });
+}
+
+export async function sendOtpEmail(to: string, otp: string) {
+  const transport = createBrevoTransport();
+  if (!transport) {
+    throw new Error('Brevo email is not configured.');
+  }
+
+  await transport.sendMail({
+    from: {
+      name: env.brevoFromName,
+      address: env.brevoFromEmail,
+    },
+    to,
+    subject: 'Japanese Learning Portal - Email Verification Code',
+    text: `Your Japanese Learning Portal verification code is:\n\n${otp}\n\nThis code expires in 10 minutes.\n\nIf you did not request this code, you can ignore this email.`,
   });
 }
 
