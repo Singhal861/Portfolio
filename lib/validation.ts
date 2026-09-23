@@ -1,11 +1,21 @@
 import { z } from 'zod';
 
+export const passwordSchema = z.string().min(8, 'Password must be at least 8 characters.').max(72, 'Password is too long.')
+  .regex(/[A-Za-z]/, 'Password must contain a letter.')
+  .regex(/[0-9]/, 'Password must contain a number.');
+
 export const registerSchema = z.object({
   name: z.string().trim().min(2, 'Enter your name.').max(80, 'Name is too long.'),
   email: z.string().trim().email('Enter a valid email address.').max(254, 'Email is too long.'),
-  password: z.string().min(8, 'Password must be at least 8 characters.').max(72, 'Password is too long.')
-    .regex(/[A-Za-z]/, 'Password must contain a letter.')
-    .regex(/[0-9]/, 'Password must contain a number.'),
+  password: passwordSchema,
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  path: ['confirmPassword'],
+  message: 'Passwords do not match.',
+});
+
+export const passwordResetSchema = z.object({
+  password: passwordSchema,
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
   path: ['confirmPassword'],

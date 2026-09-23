@@ -55,6 +55,9 @@ export default function LoginPage() {
             <span>{t.password}</span>
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Your password" required />
           </label>
+          <p className="auth-switch">
+            <Link href="/Japanese/forgot-password">{t.forgotPassword}</Link>
+          </p>
           {error ? <p className="form-error">{error}</p> : null}
           <button type="submit" className="button primary wide" disabled={loading}>
             {loading ? t.signingIn : t.login}
