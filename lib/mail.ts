@@ -50,6 +50,31 @@ export async function sendOtpEmail(to: string, otp: string) {
   });
 }
 
+export async function sendPasswordResetEmail(to: string, resetUrl: string) {
+  const transport = createBrevoTransport();
+  if (!transport) {
+    throw new Error('Brevo email is not configured.');
+  }
+
+  await transport.sendMail({
+    from: {
+      name: env.brevoFromName,
+      address: env.brevoFromEmail,
+    },
+    to,
+    subject: 'Japanese Learning Portal - Reset your password',
+    text: [
+      'We received a request to reset your Japanese Learning Portal password.',
+      '',
+      `Reset your password here: ${resetUrl}`,
+      '',
+      'This link expires in 30 minutes.',
+      '',
+      "If you did not request this password reset, you can ignore this email.",
+    ].join('\n'),
+  });
+}
+
 export async function sendCsvEmail(to: string, subject: string, csvContent: string) {
   const transport = createTransport();
   if (!transport) {
