@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useState } from 'react';
 import EmailDataButton from '@/components/email-data-button';
 import { useLanguage } from '@/components/language-provider';
+import { useMemo } from 'react';
 
 type Verb = {
   id: string;
@@ -52,6 +53,7 @@ export default function VerbManager({ userName }: { userName: string }) {
   const [loading, setLoading] = useState(true);
   const [working, setWorking] = useState(false);
   const [result, setResult] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   async function loadVerbs() {
     setError('');
@@ -149,19 +151,49 @@ export default function VerbManager({ userName }: { userName: string }) {
     finally { setWorking(false); }
   }
 
+  // Filter verbs based on search term (case-insensitive partial match on Meaning field)
+  const filteredVerbs = useMemo(() => {
+    if (!searchTerm.trim()) return verbs;
+    const term = searchTerm.toLowerCase().trim();
+    return verbs.filter(verb => 
+      verb.Meaning.toLowerCase().includes(term)
+    );
+  }, [verbs, searchTerm]);
+
   return (
     <>
       <div className="panel-header">
         <div><p className="eyebrow"><span className="eyebrow-dot" /> {t.myVocabulary}</p><h1>{t.welcome}, {userName}</h1><p className="hero-text">{t.vocabularyDescription}</p></div>
         <div className="dashboard-actions">
           <button type="button" className="button primary" onClick={openAdd}>{t.addVerb}</button>
-          <a href="/Japanese/api/export" className="button secondary hide-on-mobile">{t.downloadCsv}</a>
-          <div className="hide-on-mobile"><EmailDataButton email="" /></div>
+          <div className="search-container">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder={t.searchVerbs}
+              className="search-input"
+            />
+            {searchTerm.trim() && (
+              <button
+                type="button"
+                className="clear-search"
+                onClick={() => setSearchTerm('')}
+                aria-label={t.clearSearch}
+              >
+                ✕
+              </button>
+            )}
+          </div>
+          <a href="/Japanese/api/export" className="button secondary hide-below-1200">{t.downloadCsv}</a>
+          <div className="hide-below-1200"><EmailDataButton email="" /></div>
         </div>
       </div>
       {error ? <p className="form-error">{error}</p> : null}
-      {result && !formOpen ? <div className="action-result"><span>{result}</span><button type="button" className="button primary" onClick={openAdd}>{t.addMoreVerbs}</button><button type="button" className="button secondary" onClick={() => setResult('')}>{t.back}</button></div> : null}
-      {loading ? <p className="empty-state">{t.loadingVerbs}</p> : <div className="table-wrap"><table><thead><tr><th>S.No</th>{fields.map((field) => <th key={field.key}>{field.label}</th>)}<th>{t.actions}</th></tr></thead><tbody>{verbs.map((verb) => <tr key={verb.id}><td>{verb['S.No']}</td>{fields.map((field) => <td key={field.key}>{verb[field.key]}</td>)}<td className="action-cell">{verb.isSample || verb.id.startsWith('verb_sample_') ? <span className="badge-immutable" title={t.defaultRowTitle}>🔒 {t.defaultRow}</span> : <><button type="button" className="icon-action" aria-label={t.editVerb} title={t.editVerb} onClick={() => openEdit(verb)}>✎</button><button type="button" className="icon-action danger" aria-label={t.deleteVerb} title={t.deleteVerb} onClick={() => { setDeleteId(verb.id); setConfirmation(''); setError(''); }}>⌫</button></>}</td></tr>)}</tbody></table></div>}
+      {result && !formOpen ? <div className="action-result" onClick={() => setResult('')}>
+        <span>{result}</span>
+      </div> : null}
+      {loading ? <p className="empty-state">{t.loadingVerbs}</p> : <div className="table-wrap"><table><thead><tr><th>S.No</th>{fields.map((field) => <th key={field.key}>{field.label}</th>)}<th>{t.actions}</th></tr></thead><tbody>{filteredVerbs.map((verb) => <tr key={verb.id}><td>{verb['S.No']}</td>{fields.map((field) => <td key={field.key}>{verb[field.key]}</td>)}<td className="action-cell">{verb.isSample || verb.id.startsWith('verb_sample_') ? <span className="badge-immutable" title={t.defaultRowTitle}>🔒 {t.defaultRow}</span> : <><button type="button" className="icon-action" aria-label={t.editVerb} title={t.editVerb} onClick={() => openEdit(verb)}>✎</button><button type="button" className="icon-action danger" aria-label={t.deleteVerb} title={t.deleteVerb} onClick={() => { setDeleteId(verb.id); setConfirmation(''); setError(''); }}>⌫</button></>}</td></tr>)}</tbody></table></div>}
 
       {formOpen ? <div className="modal-backdrop" role="presentation" onClick={(e) => e.target === e.currentTarget && handleCloseAttempt()}><form className="modal-card verb-modal" onSubmit={saveVerb}><div className="panel-header"><div><p className="eyebrow"><span className="eyebrow-dot" /> {t.verbForms}</p><h2>{editingId ? t.editVerb : t.addVerb}</h2></div><button type="button" className="modal-close" onClick={handleCloseAttempt}>{t.back}</button></div><div className="verb-form-grid">{fields.map((field) => <label key={field.key}><span>{field.label}</span><input value={form[field.key] || ''} onChange={(event) => updateField(field.key, event.target.value)} required /></label>)}</div>{error ? <p className="form-error">{error}</p> : null}<div className="form-actions"><button type="submit" className={`button primary ${working ? 'is-working' : ''}`} disabled={working}>{working ? t.saving : t.submit}</button><button type="button" className="button secondary" onClick={clearForm} disabled={working}>{t.clear}</button>{editingId ? <button type="button" className="button danger-button" onClick={() => { setDeleteId(editingId); setConfirmation(''); }} disabled={working}>{t.delete}</button> : null}</div></form></div> : null}
 
