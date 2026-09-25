@@ -4,8 +4,6 @@ import { authOptions } from '../../../../lib/auth';
 import {
   readUserVerbsWithNumbers,
   appendUserVerb,
-  updateUserVerb,
-  deleteUserVerb,
   SAMPLE_VERB_DATA,
 } from '../../../../lib/googleSheets';
 import { verbSchema } from '../../../../lib/validation';

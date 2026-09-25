@@ -128,7 +128,6 @@ function conjugateSingle(verb: string, group: "ichidan" | "godan" | "suru" | "ku
 
   if (group === "kuru") {
     const isKanji = verb.includes("来");
-    const stem = isKanji ? "来" : "き";
     const ko = isKanji ? "来" : "こ";
     const ki = isKanji ? "来" : "き";
     return {

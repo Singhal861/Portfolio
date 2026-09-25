@@ -4,7 +4,6 @@ import { authOptions } from '@/lib/auth';
 import {
   readUserVerbsWithNumbers,
   updateUserVerb,
-  deleteUserVerb,
   deleteUserVerbById,
   SAMPLE_VERB_DATA,
 } from '@/lib/googleSheets';
@@ -59,7 +58,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
     }
 
     const updatedAt = new Date().toISOString();
-    await updateUserVerb(owner.email, owner.row.rowNumber, [
+    await updateUserVerb([
       owner.row.data['S.No'],
       parsed.data.Meaning,
       parsed.data.Dictionary,
@@ -116,11 +115,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
       );
     }
 
-    if (supabase) {
-      await deleteUserVerbById(params.id);
-    } else {
-      await deleteUserVerb(owner.email, owner.row.rowNumber);
-    }
+    await deleteUserVerbById(params.id);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Verb delete error', error);

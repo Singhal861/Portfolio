@@ -174,10 +174,7 @@ export default function VerbManager({ userName }: { userName: string }) {
     }
   }, [expectedConjugations]);
 
-  const debouncedSearchTerm = useRef<string>('');
-  const debouncedSearchHandler = useCallback(() => {
-    setSearchTerm(debouncedSearchTerm.current);
-  }, [debouncedSearchTerm]);
+
 
   async function loadVerbs() {
     setError('');
