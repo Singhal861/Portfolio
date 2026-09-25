@@ -11,6 +11,7 @@ export default function LoginPage() {
   const { t } = useLanguage();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -53,7 +54,24 @@ export default function LoginPage() {
           </label>
           <label>
             <span>{t.password}</span>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Your password" required />
+            <div className="password-input-wrapper">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Your password"
+                required
+                className="password-input"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? t.hidePassword : t.showPassword}
+                className="password-toggle"
+              >
+                {showPassword ? '👁️' : '👁️‍🗨️'}
+              </button>
+            </div>
           </label>
           <p className="auth-switch">
             <Link href="/Japanese/forgot-password">{t.forgotPassword}</Link>

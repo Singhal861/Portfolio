@@ -357,6 +357,100 @@ h1 {
   gap: 12px;
 }
 
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  align-self: center;
+  transform: translateY(5px);
+  flex: 0 1 150px;
+  min-width: 120px;
+  max-width: 170px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 11px 40px 11px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--glass-bg);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  transition: var(--transition);
+  box-sizing: border-box;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--sakura-deep);
+  box-shadow: 0 0 0 3px var(--amber-glow);
+}
+
+.clear-search {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  width: 24px;
+  height: 24px;
+  font-size: 1rem;
+  line-height: 1;
+}
+.clear-search:hover {
+  color: var(--text-primary);
+}
+
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input {
+  width: 100%;
+  padding: 8px 36px 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--glass-bg);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
+
+.password-input:focus {
+  outline: none;
+  border-color: var(--sakura-deep);
+  box-shadow: 0 0 0 3px var(--amber-glow);
+}
+
+.password-toggle {
+  position: absolute;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.password-toggle:hover {
+  color: var(--text-primary);
+}
+
 .header-actions {
   margin-left: auto;
   display: flex;
@@ -513,7 +607,9 @@ textarea {
 .table-wrap {
   width: 100%;
   max-width: 100%;
+  max-height: 580px;
   overflow-x: auto;
+  overflow-y: auto;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: var(--midnight-card);
@@ -540,6 +636,9 @@ th {
   font-size: 0.82rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 tbody tr:hover {
@@ -865,6 +964,16 @@ body {
 
 @media (max-width: 767px) {
   .hide-on-mobile {
+    display: none !important;
+  }
+}
+
+.hide-below-1200 {
+  display: inline-flex !important;
+}
+
+@media (max-width: 1199px) {
+  .hide-below-1200 {
     display: none !important;
   }
 }

@@ -95,6 +95,10 @@ export const translations = {
     unableDeleteVerb: 'Unable to delete verb.',
     duplicateVerb: 'Verb already saved.',
     refresh: 'Refresh',
+    searchVerbs: 'Search meanings...',
+    clearSearch: 'Clear search',
+    showPassword: 'Show password',
+    hidePassword: 'Hide password',
   },
   ja: {
     portalTitle: '日本語学習ポータル',
@@ -186,6 +190,10 @@ export const translations = {
     unableDeleteVerb: '動詞を削除できませんでした。',
     duplicateVerb: 'この動詞はすでに保存されています。',
     refresh: '更新',
+    searchVerbs: 'Search meanings...',
+    clearSearch: 'Clear search',
+    showPassword: 'Show password',
+    hidePassword: 'Hide password',
   },
 };
 

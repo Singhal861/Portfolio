@@ -10,7 +10,9 @@ function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token') || '';
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState(token ? '' : t.invalidOrExpiredResetLink);
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -67,11 +69,47 @@ function ResetPasswordForm() {
             <form onSubmit={handleSubmit} className="auth-form">
               <label>
                 <span>{t.newPassword}</span>
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 8 characters" minLength={8} required disabled={!token} />
+                <div className="password-input-wrapper">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="At least 8 characters"
+                    minLength={8}
+                    required
+                    disabled={!token}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? t.hidePassword : t.showPassword}
+                    className="password-toggle"
+                  >
+                    {showPassword ? '👁️' : '👁️‍🗨️'}
+                  </button>
+                </div>
               </label>
               <label>
                 <span>{t.confirmNewPassword}</span>
-                <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Repeat your password" minLength={8} required disabled={!token} />
+                <div className="password-input-wrapper">
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Repeat your password"
+                    minLength={8}
+                    required
+                    disabled={!token}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    aria-label={showConfirmPassword ? t.hidePassword : t.showPassword}
+                    className="password-toggle"
+                  >
+                    {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+                  </button>
+                </div>
               </label>
               {error ? <p className="form-error">{error}</p> : null}
               <button type="submit" className="button primary wide" disabled={loading || !token}>
