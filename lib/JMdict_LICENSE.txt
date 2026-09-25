@@ -1,0 +1,6 @@
+This application uses dictionary data from the JMdict project (http://www.edrdg.org/jmdict/j_jmdict.html).
+The JMdict data is the property of the Electronic Dictionary Research and Development Group (EDRDG), and is used in conformance with the Group's licence (https://www.edrdg.org/edrdg/licence.html).
+
+The JSON dataset was compiled using the jmdict-simplified project (https://github.com/scriptin/jmdict-simplified).
+
+License: Creative Commons Attribution-ShareAlike (CC BY-SA 3.0/4.0).

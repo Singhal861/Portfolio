@@ -50,9 +50,7 @@ export const SAMPLE_VERB_DATA = {
   Stem: 'まち',
 };
 
-export async function ensureSheetTabs() {
-  // No-op for Supabase
-}
+
 
 export async function readRows(sheetName: string) {
   if (sheetName === 'Users') {
@@ -72,7 +70,7 @@ export async function readRows(sheetName: string) {
 export async function appendUser(row: string[]) {
   const [id, name, email, passwordHash, createdAt] = row;
 
-  const { data: existing, error: checkError } = await getSupabase()
+  const { data: existing } = await getSupabase()
     .from('users')
     .select('email')
     .eq('email', email.toLowerCase())
@@ -205,7 +203,7 @@ export async function appendUserVerb(email: string, row: (string | number)[]) {
   if (error) throw error;
 }
 
-export async function updateUserVerb(email: string, rowNumber: number, values: (string | number)[]) {
+export async function updateUserVerb(values: (string | number)[]) {
   const [
     sNo,
     meaning,
@@ -223,8 +221,8 @@ export async function updateUserVerb(email: string, rowNumber: number, values: (
     teImasuVe,
     stem,
     verbId,
-    userEmail,
-    createdAt,
+    , // userEmail (unused)
+    , // createdAt (unused)
     updatedAt,
   ] = values;
 
@@ -253,9 +251,7 @@ export async function updateUserVerb(email: string, rowNumber: number, values: (
   if (error) throw error;
 }
 
-export async function deleteUserVerb(email: string, rowNumber: number) {
-  // rowNumber fallback (no-op for Supabase)
-}
+
 
 export async function deleteUserVerbById(verbId: string) {
   const { error } = await getSupabase().from('verbs').delete().eq('id', verbId);

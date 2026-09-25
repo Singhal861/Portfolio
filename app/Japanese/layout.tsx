@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import SiteHeader from '@/components/site-header';
